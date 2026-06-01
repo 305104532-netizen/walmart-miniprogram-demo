@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>沃尔玛卖家成长中心</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: linear-gradient(160deg, #0a0e27 0%, #1a1145 30%, #0d2b5e 60%, #003d7a 100%); min-height: 100vh; overflow-x: hidden; color: #fff; }
+.particles { position: fixed; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden; }
+.particle { position: absolute; border-radius: 50%; opacity: 0.12; animation: floatUp 20s infinite ease-in-out; }
+.particle:nth-child(1) { left: 5%; width: 100px; height: 100px; background: radial-gradient(circle, #FFC220 0%, transparent 70%); animation-duration: 25s; }
+.particle:nth-child(2) { left: 30%; width: 70px; height: 70px; background: radial-gradient(circle, #4a90d9 0%, transparent 70%); animation-delay: 3s; animation-duration: 20s; }
+.particle:nth-child(3) { left: 65%; width: 50px; height: 50px; background: radial-gradient(circle, #FFC220 0%, transparent 70%); animation-delay: 5s; animation-duration: 22s; }
+.particle:nth-child(4) { left: 85%; width: 80px; height: 80px; background: radial-gradient(circle, #6c5ce7 0%, transparent 70%); animation-delay: 2s; animation-duration: 18s; }
+@keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 10% { opacity: 0.12; } 90% { opacity: 0.12; } 100% { transform: translateY(-100px); opacity: 0; } }
+
+.app { position: relative; z-index: 1; max-width: 375px; margin: 0 auto; min-height: 100vh; }
+.page { display: none; padding: 0 0 80px; min-height: 100vh; }
+.page.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.glass-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+.section-title { font-size: 16px; font-weight: 700; margin: 20px 16px 12px; display: flex; align-items: center; gap: 8px; }
+.section-title::before { content: ''; width: 3px; height: 16px; background: #FFC220; border-radius: 2px; }
+.tag { background: rgba(255,194,32,0.15); color: #FFC220; padding: 2px 8px; border-radius: 4px; font-size: 10px; }
+.tag-blue { background: rgba(0,76,145,0.3); color: #4a90d9; padding: 2px 8px; border-radius: 4px; font-size: 10px; }
+.back-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; color: rgba(255,255,255,0.8); cursor: pointer; padding: 8px 0; margin: 0 16px; }
+
+.header { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+.logo-area { display: flex; align-items: center; gap: 8px; }
+.logo-area svg { width: 26px; height: 26px; }
+.logo-area span { font-size: 17px; font-weight: bold; color: #FFC220; }
+.hdr-btns { display: flex; gap: 10px; }
+.hdr-btn { width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; }
+
+.tabbar { position: fixed; bottom: 0; left: 0; right: 0; max-width: 375px; margin: 0 auto; background: rgba(10,14,39,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-around; padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); z-index: 100; }
+.tab { display: flex; flex-direction: column; align-items: center; gap: 2px; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; transition: 0.2s; padding: 4px 12px; }
+.tab.active { color: #FFC220; }
+.tab-icon { font-size: 20px; }
+
+/* Banner */
+.banner { margin: 12px 16px; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.banner img { width: 100%; height: 140px; object-fit: cover; display: block; }
+
+/* 成长卡片 */
+.growth-card { margin: 12px 16px; padding: 18px; position: relative; overflow: hidden; }
+.growth-card::after { content: ''; position: absolute; top: -40%; right: -20%; width: 150px; height: 150px; border-radius: 50%; background: radial-gradient(circle, rgba(255,194,32,0.08) 0%, transparent 70%); }
+.growth-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.level-badge { background: linear-gradient(135deg, #FFC220, #ff9500); color: #1a1145; padding: 4px 12px; border-radius: 16px; font-weight: 800; font-size: 12px; }
+.level-name { font-size: 18px; font-weight: 700; margin-left: 8px; }
+.medal-ct { color: #FFC220; font-size: 12px; }
+.prog-bar { height: 5px; background: rgba(255,255,255,0.15); border-radius: 3px; overflow: hidden; margin-bottom: 5px; }
+.prog-fill { height: 100%; width: 65%; background: linear-gradient(90deg, #FFC220, #ff6b35); border-radius: 3px; }
+.prog-txt { font-size: 11px; color: rgba(255,255,255,0.6); text-align: right; }
+
+/* 金刚区 */
+.icon-grid { margin: 12px 16px; padding: 18px 12px; }
+.grid-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 12px; }
+.grid-row:last-child { margin-bottom: 0; }
+.grid-item { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
+.grid-item:active { transform: scale(0.93); }
+.g-icon { width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; background: linear-gradient(135deg, rgba(255,194,32,0.18), rgba(0,76,145,0.25)); box-shadow: 0 4px 16px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.06); }
+.g-label { font-size: 11px; color: rgba(255,255,255,0.8); }
+
+/* 推荐 */
+.rec-list { padding: 0 16px; }
+.rec-card { padding: 14px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+.rec-card:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); }
+.rc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.rc-title { font-size: 15px; font-weight: 600; flex: 1; line-height: 1.4; }
+.rc-desc { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.5; margin-bottom: 8px; }
+.rc-meta { display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,0.4); }
+
+/* 课程列表 */
+.course-tabs { display: flex; margin: 12px 16px; background: rgba(255,255,255,0.06); border-radius: 10px; padding: 3px; }
+.c-tab { flex: 1; text-align: center; padding: 8px 0; border-radius: 8px; font-size: 13px; cursor: pointer; color: rgba(255,255,255,0.6); transition: 0.2s; }
+.c-tab.active { background: rgba(255,194,32,0.2); color: #FFC220; font-weight: 600; }
+.course-list { padding: 0 16px; }
+.course-item { display: flex; gap: 12px; padding: 14px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+.course-item:hover { background: rgba(255,255,255,0.08); }
+.c-thumb { width: 80px; height: 56px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.c-thumb.open { background: linear-gradient(135deg, #004C91, #3a8fd4); }
+.c-thumb.paid { background: linear-gradient(135deg, #ff9500, #FFC220); }
+.c-info { flex: 1; }
+.c-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.c-meta { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+.c-prog { display: flex; align-items: center; gap: 8px; }
+.c-prog-bar { flex: 1; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
+.c-prog-fill { height: 100%; background: #FFC220; border-radius: 2px; }
+.c-prog-txt { font-size: 10px; color: #FFC220; }
+
+/* 成长中心 */
+.gh-hero { margin: 12px 16px; padding: 28px 18px; text-align: center; background: linear-gradient(135deg, rgba(255,194,32,0.1), rgba(0,76,145,0.2)); border: 1px solid rgba(255,194,32,0.12); }
+.gh-icon { font-size: 48px; margin-bottom: 8px; }
+.gh-name { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+.gh-val { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
+.gh-prog { height: 8px; background: rgba(255,255,255,0.15); border-radius: 4px; overflow: hidden; margin: 0 10px 6px; }
+.gh-prog-fill { height: 100%; width: 65%; background: linear-gradient(90deg, #FFC220, #ff6b35); border-radius: 4px; }
+.gh-next { font-size: 11px; color: rgba(255,255,255,0.5); }
+
+.badges-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 0 16px; margin-bottom: 16px; }
+.badge-item { text-align: center; }
+.badge-icon { width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: rgba(255,194,32,0.1); border: 2px solid rgba(255,194,32,0.3); }
+.badge-icon.locked { opacity: 0.4; border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); }
+.badge-name { font-size: 10px; color: rgba(255,255,255,0.7); }
+
+.task-list { padding: 0 16px; }
+.task-item { display: flex; align-items: center; gap: 12px; padding: 14px; margin-bottom: 8px; }
+.task-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; background: rgba(255,194,32,0.1); }
+.task-info { flex: 1; }
+.task-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.task-desc { font-size: 11px; color: rgba(255,255,255,0.5); }
+.task-reward { font-size: 11px; color: #FFC220; white-space: nowrap; }
+
+/* 任务中心 */
+.task-center-tabs { display: flex; gap: 8px; margin: 12px 16px; overflow-x: auto; }
+.task-ct-tab { padding: 6px 16px; border-radius: 16px; font-size: 12px; white-space: nowrap; cursor: pointer; background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); transition: 0.2s; }
+.task-ct-tab.active { background: rgba(255,194,32,0.2); color: #FFC220; }
+.task-ct-list { padding: 0 16px; }
+.task-ct-item { display: flex; align-items: center; gap: 12px; padding: 14px; margin-bottom: 8px; }
+.task-ct-left { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.task-ct-left.daily { background: rgba(74,222,128,0.15); }
+.task-ct-left.growth { background: rgba(255,194,32,0.15); }
+.task-ct-left.challenge { background: rgba(108,92,231,0.15); }
+.task-ct-info { flex: 1; }
+.task-ct-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.task-ct-desc { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+.task-ct-prog { height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
+.task-ct-prog-fill { height: 100%; background: #FFC220; border-radius: 2px; }
+.task-ct-reward { text-align: right; }
+.task-ct-reward-val { font-size: 12px; color: #FFC220; font-weight: 600; }
+.task-ct-reward-label { font-size: 10px; color: rgba(255,255,255,0.4); }
+.task-ct-btn { margin-top: 6px; padding: 4px 12px; border-radius: 6px; background: rgba(255,194,32,0.15); color: #FFC220; font-size: 11px; border: none; cursor: pointer; }
+.task-ct-btn.done { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); }
+
+/* 勋章墙 */
+.badge-wall { padding: 12px 16px; }
+.badge-wall-category { margin-bottom: 20px; }
+.bwc-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: rgba(255,255,255,0.9); }
+.bwc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.bwc-item { text-align: center; padding: 12px 6px; border-radius: 12px; background: rgba(255,255,255,0.04); transition: 0.2s; cursor: pointer; }
+.bwc-item:hover { background: rgba(255,255,255,0.08); }
+.bwc-item.locked { opacity: 0.35; }
+.bwc-icon { font-size: 32px; margin-bottom: 6px; }
+.bwc-name { font-size: 11px; color: rgba(255,255,255,0.8); margin-bottom: 4px; }
+.bwc-condition { font-size: 9px; color: rgba(255,255,255,0.4); }
+.bwc-progress { font-size: 9px; color: #FFC220; }
+
+/* AI考核 */
+.exam-info { margin: 12px 16px; padding: 16px; }
+.exam-level { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.exam-level-badge { background: linear-gradient(135deg, #FFC220, #ff9500); color: #1a1145; padding: 5px 14px; border-radius: 16px; font-weight: 800; font-size: 13px; }
+.exam-level-name { font-size: 16px; font-weight: 700; }
+.exam-desc { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 16px; }
+.exam-rules { margin-bottom: 16px; }
+.exam-rules-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.exam-rule-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: rgba(255,255,255,0.7); margin-bottom: 6px; }
+.exam-rule-item span:first-child { color: #FFC220; }
+.start-exam-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: linear-gradient(135deg, #FFC220, #ff9500); color: #1a1145; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 12px; box-shadow: 0 6px 20px rgba(255,194,32,0.3); }
+.start-exam-btn:active { transform: scale(0.98); }
+
+/* 考核结果 */
+.result-card { margin: 40px 16px 20px; padding: 32px 20px; text-align: center; }
+.result-score { font-size: 64px; font-weight: 800; color: #FFC220; margin-bottom: 8px; }
+.result-label { font-size: 16px; color: rgba(255,255,255,0.7); margin-bottom: 4px; }
+.result-status { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+.result-detail { display: flex; justify-content: space-around; margin: 20px 0; }
+.result-detail-item { text-align: center; }
+.result-detail-val { font-size: 20px; font-weight: 700; }
+.result-detail-label { font-size: 11px; color: rgba(255,255,255,0.5); }
+.result-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 12px; }
+.result-btn.primary { background: linear-gradient(135deg, #FFC220, #ff9500); color: #1a1145; }
+.result-btn.secondary { background: rgba(255,255,255,0.1); color: #fff; }
+
+/* 入驻引导 */
+.onboard-hero { margin: 40px 16px 20px; text-align: center; }
+.onboard-icon { font-size: 56px; margin-bottom: 16px; }
+.onboard-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+.onboard-desc { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 24px; }
+.onboard-steps { padding: 0 16px; margin-bottom: 24px; }
+.onboard-step { display: flex; gap: 14px; margin-bottom: 20px; }
+.onboard-step-num { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,194,32,0.15); border: 1px solid rgba(255,194,32,0.3); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #FFC220; flex-shrink: 0; }
+.onboard-step-content { flex: 1; }
+.onboard-step-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.onboard-step-desc { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+.onboard-btn { flex: 1; padding: 14px; border: none; border-radius: 12px; background: linear-gradient(135deg, #FFC220, #ff9500); color: #1a1145; font-size: 15px; font-weight: 700; cursor: pointer; }
+.onboard-btn.secondary { background: rgba(255,255,255,0.1); color: #fff; }
+
+/* 我的 */
+.profile-card { margin: 16px; padding: 24px 18px; text-align: center; }
+.avatar { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #FFC220, #ff9500); margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+.username { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.user-id { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+.stats-row { display: flex; justify-content: space-around; }
+.stat { text-align: center; }
+.stat-num { font-size: 20px; font-weight: 700; color: #FFC220; }
+.stat-label { font-size: 11px; color: rgba(255,255,255,0.6); }
+.menu-list { padding: 0 16px; }
+.menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; margin-bottom: 6px; cursor: pointer; }
+.menu-item:hover { background: rgba(255,255,255,0.08); }
+.menu-icon { font-size: 20px; }
+.menu-text { flex: 1; font-size: 14px; }
+.menu-arrow { color: rgba(255,255,255,0.3); font-size: 14px; }
+
+/* TabBar */
+.tabbar { position: fixed; bottom: 0; left: 0; right: 0; max-width: 375px; margin: 0 auto; background: rgba(10,14,39,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-around; padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); z-index: 100; }
+.tab { display: flex; flex-direction: column; align-items: center; gap: 2px; color: rgba(255,255,255,0.5); font-size: 10px; cursor: pointer; transition: 0.2s; padding: 4px 12px; }
+.tab.active { color: #FFC220; }
+.tab-icon { font-size: 20px; }
+
+/* 弹窗 */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal { background: linear-gradient(160deg, #1a1145, #0d2b5e); border-radius: 20px; padding: 28px 24px; max-width: 320px; width: 90%; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+.modal-icon { font-size: 48px; margin-bottom: 12px; } .modal-icon i { color: #FFC220 !important; }
+.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.modal-desc { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 20px; }
+.modal-btn { width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 8px; }
+.modal-btn.primary { background: linear-gradient(135deg, #FFC220, #ff9500); color: #1a1145; }
+.modal-btn.secondary { background: rgba(255,255,255,0.1); color: #fff; }
+.modal-close { margin-top: 8px; font-size: 12px; color: rgba(255,255,255,0.4); cursor: pointer; }
+
+/* 课程详情 */
+.detail-cover { width: 100%; height: 180px; display: flex; align-items: center; justify-content: center; font-size: 56px; }
+.detail-body { padding: 20px 16px; }
+.detail-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.detail-meta { display: flex; gap: 12px; font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
+.detail-section { margin-bottom: 20px; }
+.detail-section-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: #FFC220; }
+.detail-text { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.8; }
+.chapter-list { padding: 0; }
+.chapter-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer; }
+.chapter-item:last-child { border-bottom: none; }
+.chapter-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 12px; color: rgba(255,255,255,0.6); flex-shrink: 0; }
+.chapter-num.done { background: rgba(255,194,32,0.2); color: #FFC220; }
+.chapter-info { flex: 1; }
+.chapter-name { font-size: 14px; margin-bottom: 2px; }
+.chapter-dur { font-size: 11px; color: rgba(255,255,255,0.4); }
+.chapter-status { font-size: 12px; }
+.ch-bottom-bar { position: sticky; bottom: 0; padding: 12px 16px; background: rgba(10,14,39,0.98); border-top: 1px solid rgba(255,255,255,0.06); display: flex; gap: 12px; }
+.c-bottom-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.c-bottom-btn.primary { background: linear-gradient(135deg, #FFC220, #ff9500); color: #1a1145; }
+.c-bottom-btn.secondary { background: rgba(255,255,255,0.1); color: #fff; }
+
+/* 消息通知 */
+.notif-list { padding: 0 16px; }
+.notif-item { display: flex; gap: 12px; padding: 14px; margin-bottom: 6px; cursor: pointer; }
+.notif-item:hover { background: rgba(255,255,255,0.06); }
+.notif-dot { width: 8px; height: 8px; border-radius: 50%; background: #FFC220; margin-top: 6px; flex-shrink: 0; }
+.notif-dot.read { background: transparent; }
+.notif-content { flex: 1; }
+.notif-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.notif-text { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5; margin-bottom: 4px; }
+.notif-time { font-size: 11px; color: rgba(255,255,255,0.3); }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/bold/style.css">
+<style>
+.tab-icon { font-size: 22px; }
+.tab-icon i { font-size: 22px; line-height: 1; }
+.ph, .ph-bold { display: inline-block; vertical-align: middle; }
+</style>
+
+<style>
+::-webkit-scrollbar { display: none; }
+* { -ms-overflow-style: none; scrollbar-width: none; }
+input, textarea { -webkit-appearance: none; }
+</style>
+</head>
+<body>
+<div class="particles"><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div></div>
+
+<div class="app">
+
+<!-- ===== 1. 首页 ===== -->
+<div class="page active" id="p-home">
+  <header class="header">
+    <div class="logo-area"><svg viewBox="0 0 201 37" style="height:20px;width:auto;vertical-align:middle"><g>
+<polygon fill="#FFF" points="38.1,0 33.4,23.3 28.2,0 19.1,0 13.9,23.3 9.3,0 0,0 7.6,35.6 18.3,35.6 23.6,12 28.9,35.6 39.4,35.6 46.9,0"/>
+<path fill="#FFF" d="M59.7,6.6c-5.7,0-9.8,1.9-11.3,3.3v7.6c1.7-1.5,5.3-3.8,10.1-3.8c2.9,0,4,0.8,4,2.5c0,1.4-1.5,2-5.7,2.9c-6.4,1.3-10.1,3.7-10.1,9.2c0,5.1,3.4,8.1,8.3,8.1c4.1,0,6.5-1.9,7.9-4.5v3.7h8.8V18.1C71.7,10.1,67.5,6.6,59.7,6.6z M58.5,30.7c-2.1,0-3.2-1.3-3.2-3c0-2.3,1.8-3.2,4.1-4c1.2-.4,2.4-.9,3.2-1.6v3.9C62.5,29,60.9,30.7,58.5,30.7z"/>
+<rect x="76.1" fill="#FFF" width="9.2" height="35.6"/>
+<path fill="#FFF" d="M123.2,6.7c-4.5,0-7.3,2.7-8.8,6.3c-.8-3.8-3.5-6.3-7.2-6.3c-4.2,0-7,2.5-8.4,6V7.5h-9v28.2h9.2V20c0-3.8,1.3-6,4-6c2.2,0,3,1.5,3,3.9v17.8h9.2V20c0-3.8,1.3-6,4-6c2.2,0,3,1.5,3,3.9v17.8h9.2V16.6C131.3,10.6,128.4,6.7,123.2,6.7z"/>
+<path fill="#FFF" d="M147.3,6.6c-5.7,0-9.8,1.9-11.3,3.3v7.6c1.7-1.5,5.3-3.8,10.1-3.8c2.9,0,4,0.8,4,2.5c0,1.4-1.5,2-5.7,2.9c-6.4,1.3-10.1,3.7-10.1,9.2c0,5.1,3.4,8.1,8.3,8.1c4.1,0,6.5-1.9,7.9-4.5v3.7h8.8V18.1C159.3,10.1,155.1,6.6,147.3,6.6z M146.1,30.7c-2.1,0-3.2-1.3-3.2-3c0-2.3,1.8-3.2,4.1-4c1.2-.4,2.4-.9,3.2-1.6v3.9C150.1,29,148.5,30.7,146.1,30.7z"/>
+<path fill="#FFF" d="M172.7,15.4v-7.9h-9v28.2h9.2V23.7c0-5.5,3.6-7,6.9-7c1.1,0,2.1,.1,2.6,.3V7.3C177.1,7,173.9,10.3,172.7,15.4z"/>
+<path fill="#FFF" d="M200.8,14.6V7.5h-5.8V2h-9.2v24.2c0,6.8,3.8,10,9.9,10c2.9,0,4.4-.6,5-1v-7.1c-.5,.4-1.4,.7-2.5,.7c-2,0-3.3-.9-3.3-3.8V14.6H200.8z"/>
+</g></svg><svg viewBox="0 0 532 600" style="height:22px;width:auto;vertical-align:middle;margin-left:4px"><g>
+<path fill="#FFC220" d="M375.7,273.4c12.5-2.6,123.1-53.3,133-59c22.5-13,30.3-41.8,17.3-64.4s-41.8-30.3-64.4-17.3c-9.9,5.7-109.1,76.2-117.6,85.7c-9.7,10.9-11.4,26.6-4.2,39C346.9,270,361.3,276.3,375.7,273.4z"/>
+<path fill="#FFC220" d="M508.7,385.6c-9.9-5.7-120.5-56.4-133-59c-14.3-3-28.7,3.4-35.9,15.9c-7.2,12.5-5.5,28.1,4.2,39c8.5,9.5,107.7,80,117.6,85.7c22.5,13,51.4,5.3,64.4-17.3S531.2,398.6,508.7,385.6z"/>
+<path fill="#FFC220" d="M266.1,385c-14.4,0-27.1,9.3-31.7,23.2c-4,12.1-15.4,133.3-15.4,144.7c0,26,21.1,47.1,47.1,47.1s47.1-21.1,47.1-47.1c0-11.4-11.4-132.6-15.4-144.7C293.2,394.3,280.5,385,266.1,385z"/>
+<path fill="#FFC220" d="M156.6,326.6c-12.5,2.6-123.1,53.3-133,59C1,398.6-6.7,427.5,6.3,450c13,22.5,41.8,30.3,64.4,17.3c9.9-5.7,109.1-76.2,117.6-85.7c9.7-10.9,11.4-26.6,4.2-39S170.9,323.7,156.6,326.6z"/>
+<path fill="#FFC220" d="M70.7,132.7C48.2,119.7,19.3,127.5,6.3,150c-13,22.5-5.3,51.4,17.3,64.4c9.9,5.7,120.5,56.4,133,59c14.3,3,28.7-3.4,35.9-15.9c7.2-12.5,5.5-28.1-4.2-39C179.8,208.9,80.6,138.4,70.7,132.7z"/>
+<path fill="#FFC220" d="M266.1,0c-26,0-47.1,21.1-47.1,47.1c0,11.4,11.4,132.6,15.4,144.7c4.6,13.9,17.3,23.2,31.7,23.2s27.1-9.3,31.7-23.2c4-12.1,15.4-133.3,15.4-144.7C313.3,21.1,292.2,0,266.1,0z"/>
+</g></svg></div>
+    <div class="hdr-btns"><button class="hdr-btn" onclick="showModal('notif-modal')"><i class="ph ph-bell" style="font-size:18px"></i></button><button class="hdr-btn" onclick="switchTab('page-mine')"><i class="ph ph-user" style="font-size:18px"></i></button></div>
+  </header>
+  <div class="banner"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 280'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23004C91'/%3E%3Cstop offset='100%25' style='stop-color:%23FFC220'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='700' height='280' fill='url(%23g)'/%3E%3Ctext x='50%25' y='42%25' text-anchor='middle' fill='white' font-size='26' font-weight='bold'%3E2026 沃尔玛全球卖家峰会%3C/text%3E%3Ctext x='50%25' y='62%25' text-anchor='middle' fill='rgba(255,255,255,0.8)' font-size='15'%3E立即报名 · 解锁专属权益%3C/text%3E%3C/svg%3E" alt="Banner"></div>
+  <div class="growth-card glass-card">
+    <div class="growth-top"><div><span class="level-badge">Lv2</span><span class="level-name">进阶卖家</span></div><span class="medal-ct">🏅 5枚勋章</span></div>
+    <div class="prog-bar"><div class="prog-fill"></div></div>
+    <div class="prog-txt">成长值 195/300 · 距高手卖家还需105</div>
+  </div>
+  <div class="icon-grid glass-card">
+    <div class="grid-row">
+      <div class="grid-item" onclick="switchTab('page-course')"><div class="g-icon"><i class="ph ph-books" style="font-size:20px;color:white"></i></div><span class="g-label">课程中心</span></div>
+      <div class="grid-item" onclick="switchTab('page-growth')"><div class="g-icon"><i class="ph ph-trend-up" style="font-size:20px;color:white"></i></div><span class="g-label">成长中心</span></div>
+      <div class="grid-item" onclick="switchTab('page-badges')"><div class="g-icon"><i class="ph ph-medal" style="font-size:20px;color:white"></i></div><span class="g-label">勋章墙</span></div>
+      <div class="grid-item" onclick="switchTab('page-tasks')"><div class="g-icon"><i class="ph ph-check-circle" style="font-size:20px;color:white"></i></div><span class="g-label">任务中心</span></div>
+    </div>
+    <div class="grid-row">
+      <div class="grid-item" onclick="switchTab('page-exam')"><div class="g-icon"><i class="ph ph-graduation-cap" style="font-size:20px;color:white"></i></div><span class="g-label">AI考核</span></div>
+      <div class="grid-item" onclick="switchTab('page-onboard')"><div class="g-icon"><i class="ph ph-rocket-launch" style="font-size:20px;color:white"></i></div><span class="g-label">快速入驻</span></div>
+      <div class="grid-item" onclick="switchTab('page-tools')"><div class="g-icon"><i class="ph ph-wrench" style="font-size:20px;color:white"></i></div><span class="g-label">实用工具</span></div>
+      <div class="grid-item" onclick="switchTab('page-smartqa')"><div class="g-icon"><i class="ph ph-robot" style="font-size:20px;color:white"></i></div><span class="g-label">智能问答</span></div>
+    </div>
+  </div>
+  <div class="marquee-wrap" style="margin:12px 16px;padding:10px 16px;background:rgba(255,194,32,0.1);border-radius:20px;display:flex;align-items:center;overflow:hidden">
+  <span style="color:#FFC220;font-size:13px;font-weight:700;white-space:nowrap;margin-right:8px"><i class="ph-bold ph-megaphone" style="margin-right:2px"></i> 公告</span>
+  <div style="flex:1;overflow:hidden;position:relative">
+    <div style="display:inline-block;white-space:nowrap;animation:marquee 20s linear infinite;color:rgba(255,255,255,0.85);font-size:12px">
+      沃尔玛2026年Q3平台政策更新已发布 &nbsp;&nbsp;&nbsp; 2026全球卖家峰会报名通道开启 &nbsp;&nbsp;&nbsp; WFS物流服务全新升级 &nbsp;&nbsp;&nbsp; 新卖家入驻前3个月佣金减免50%
+    </div>
+  </div>
+</div>
+<style>@keyframes marquee{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}</style>
+<div class="section-title">最新资讯</div>
+<div class="course-tabs" style="margin:0 16px 12px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none">
+  <span class="c-tab active" onclick="activateTab(this)" style="display:inline-block">全部</span>
+  <span class="c-tab" onclick="activateTab(this)" style="display:inline-block">沃享资讯</span>
+  <span class="c-tab" onclick="activateTab(this)" style="display:inline-block">经营在沃</span>
+  <span class="c-tab" onclick="activateTab(this)" style="display:inline-block">高效物流</span>
+  <span class="c-tab" onclick="activateTab(this)" style="display:inline-block">平台广告</span>
+  <span class="c-tab" onclick="activateTab(this)" style="display:inline-block">你问沃答</span>
+</div>
+<div style="padding:0 16px;margin-bottom:4px">
+  <div class="rec-card glass-card" onclick="switchTab('page-article',this)"><div class="rc-top"><span class="rc-title">2026年Q3平台政策更新解读</span><span class="tag">沃享资讯</span></div><div class="rc-desc">涵盖佣金费率调整、Listing新规范、绩效指标更新等重要内容</div><div class="rc-meta"><span>📅 06-01</span><span>👁 3,456</span></div></div>
+  <div class="rec-card glass-card" onclick="switchTab('page-article',this)"><div class="rc-top"><span class="rc-title">旺季物流备战指南：WFS vs FBA对比分析</span><span class="tag">高效物流</span></div><div class="rc-desc">深入对比WFS和FBA优劣势，帮您选择最适合的物流方案</div><div class="rc-meta"><span>📅 05-28</span><span>👁 2,890</span></div></div>
+  <div class="rec-card glass-card" onclick="switchTab('page-article',this)"><div class="rc-top"><span class="rc-title">广告ROI提升3倍的投放策略</span><span class="tag">平台广告</span></div><div class="rc-desc">资深广告专家分享高转化投放技巧，含实际案例分析</div><div class="rc-meta"><span>📅 05-25</span><span>👁 1,234</span></div></div>
+</div>
+<div class="section-title">板块专栏</div>
+<div style="padding:0 16px;display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none">
+  <div class="glass-card" style="padding:16px;min-width:110px;text-align:center;cursor:pointer;flex-shrink:0" onclick="switchTab('page-walmartgo',this)">
+    <div style="font-size:28px;margin-bottom:6px">🌐</div>
+    <div style="font-size:12px;font-weight:600">Walmart Go</div>
+    <div style="font-size:10px;color:rgba(255,255,255,0.4)">全球站点</div>
+  </div>
+  <div class="glass-card" style="padding:16px;min-width:110px;text-align:center;cursor:pointer;flex-shrink:0" onclick="showModal('summit-modal')">
+    <div style="font-size:28px;margin-bottom:6px">🎪</div>
+    <div style="font-size:12px;font-weight:600">平台活动</div>
+    <div style="font-size:10px;color:rgba(255,255,255,0.4)">最新活动</div>
+  </div>
+  <div class="glass-card" style="padding:16px;min-width:110px;text-align:center;cursor:pointer;flex-shrink:0" onclick="switchTab('page-course',this)">
+    <div style="font-size:28px;margin-bottom:6px">🎓</div>
+    <div style="font-size:12px;font-weight:600">卖家大学</div>
+    <div style="font-size:10px;color:rgba(255,255,255,0.4)">在线课程</div>
+  </div>
+</div>
+<div class="section-title">为你推荐</div>
+  <div class="rec-list">
+    <div class="rec-card glass-card" onclick="switchTab('page-course-detail')"><div class="rc-top"><span class="rc-title">新手必修：沃尔玛平台规则详解</span><span class="tag">公开课</span></div><div class="rc-desc">全面了解平台运营规则，避免常见违规操作</div><div class="rc-meta"><span>⏱️ 45分钟</span><span>👥 12,345人已学</span></div></div>
+    <div class="rec-card glass-card" onclick="switchTab('page-tasks')"><div class="rc-top"><span class="rc-title">晋升任务：完成3门课程解锁Lv3</span><span class="tag">成长任务</span></div><div class="rc-desc">完成指定课程并通过AI考核，晋升高手卖家</div><div class="rc-meta"><span>🎯 进度 1/3</span><span>🎁 +50成长值</span></div></div>
+    <div class="rec-card glass-card" onclick="showModal('summit-modal')"><div class="rc-top"><span class="rc-title">2026沃尔玛全球卖家峰会</span><span class="tag">限时活动</span></div><div class="rc-desc">全球顶尖卖家齐聚，Lv3+专属报名通道</div><div class="rc-meta"><span>📅 6月15日</span><span>🔥 火热报名中</span></div></div>
+  </div>
+</div>
+
+<!-- ===== 2. 课程中心 ===== -->
+<div class="page" id="page-course">
+  <header class="header"><div style="font-size:17px;font-weight:700;">课程中心</div><div class="hdr-btns"><button class="hdr-btn"><i class="ph ph-magnifying-glass" style="font-size:18px"></i></button></div></header>
+  <div class="course-tabs"><div class="c-tab active" onclick="activateTab(this)">全部</div><div class="c-tab" onclick="activateTab(this)">公开课</div><div class="c-tab" onclick="activateTab(this)">非公开课</div><div class="c-tab" onclick="activateTab(this)">已学习</div></div>
+  <div class="course-list">
+    <div class="course-item glass-card" onclick="switchTab('page-course-detail')"><div class="c-thumb open"><i class="ph ph-package" style="font-size:24px;color:white"></i></div><div class="c-info"><div class="c-name">沃尔玛Listing优化实战</div><div class="c-meta">公开课 · 8节 · 2.5小时</div><div class="c-prog"><div class="c-prog-bar"><div class="c-prog-fill" style="width:60%"></div></div><span class="c-prog-txt">60%</span></div></div></div>
+    <div class="course-item glass-card" onclick="switchTab('page-course-detail')"><div class="c-thumb paid"><i class="ph ph-chart-bar" style="font-size:24px;color:white"></i></div><div class="c-info"><div class="c-name">广告投放高阶技巧</div><div class="c-meta">非公开课 · 12节 · 4小时 · 🔒 Lv2+</div><div class="c-prog"><div class="c-prog-bar"><div class="c-prog-fill" style="width:25%"></div></div><span class="c-prog-txt">25%</span></div></div></div>
+    <div class="course-item glass-card" onclick="switchTab('page-course-detail')"><div class="c-thumb open"><i class="ph ph-rocket-launch" style="font-size:24px;color:white"></i></div><div class="c-info"><div class="c-name">新手7天快速上架指南</div><div class="c-meta">公开课 · 5节 · 1.5小时</div><div class="c-prog"><div class="c-prog-bar"><div class="c-prog-fill" style="width:100%"></div></div><span class="c-prog-txt">✅</span></div></div></div>
+    <div class="course-item glass-card" onclick="switchTab('page-course-detail')"><div class="c-thumb paid"><i class="ph ph-currency-circle-dollar" style="font-size:24px;color:white"></i></div><div class="c-info"><div class="c-name">定价策略与利润优化</div><div class="c-meta">非公开课 · 6节 · 2小时 · 🔒 Lv3+</div><div class="c-prog"><div class="c-prog-bar"><div class="c-prog-fill" style="width:0%"></div></div><span class="c-prog-txt">未开始</span></div></div></div>
+    <div class="course-item glass-card" onclick="switchTab('page-course-detail')"><div class="c-thumb open"><i class="ph ph-globe" style="font-size:24px;color:white"></i></div><div class="c-info"><div class="c-name">跨境物流与合规要点</div><div class="c-meta">公开课 · 4节 · 1小时</div><div class="c-prog"><div class="c-prog-bar"><div class="c-prog-fill" style="width:80%"></div></div><span class="c-prog-txt">80%</span></div></div></div>
+    <div class="course-item glass-card" onclick="switchTab('page-course-detail')"><div class="c-thumb paid"><i class="ph ph-target" style="font-size:24px;color:white"></i></div><div class="c-info"><div class="c-name">GMV翻倍实战营</div><div class="c-meta">非公开课 · 10节 · 5小时 · 🔒 Lv3+</div><div class="c-prog"><div class="c-prog-bar"><div class="c-prog-fill" style="width:0%"></div></div><span class="c-prog-txt">未开始</span></div></div></div>
+  </div>
+</div>
+
+<!-- ===== 3. 课程详情页 ===== -->
+<div class="page" id="page-course-detail">
+  <div class="back-btn" onclick="backTo('page-course')">‹ 返回课程中心</div>
+  <div class="detail-cover" style="background: linear-gradient(135deg, #004C91, #FFC220);">📦</div>
+  <div class="detail-body">
+    <div class="detail-title">沃尔玛Listing优化实战</div>
+    <div class="detail-meta"><span>公开课</span><span>8节</span><span>2.5小时</span><span>12,345人已学</span></div>
+    <div class="detail-section">
+      <div class="detail-section-title">课程简介</div>
+      <div class="detail-text">本课程系统讲解沃尔玛平台Listing优化全流程，涵盖标题撰写、图片规范、要点描述、后台关键词等核心内容，帮助卖家提升搜索排名和转化率。</div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">课程目录（8节）</div>
+      <div class="glass-card" style="overflow:hidden">
+        <div class="chapter-item"><div class="chapter-num done">✓</div><div class="chapter-info"><div class="chapter-name">1. Listing优化概述</div><div class="chapter-dur">15分钟</div></div><div class="chapter-status">✅ 已学</div></div>
+        <div class="chapter-item"><div class="chapter-num done">✓</div><div class="chapter-info"><div class="chapter-name">2. 标题撰写技巧</div><div class="chapter-dur">22分钟</div></div><div class="chapter-status">✅ 已学</div></div>
+        <div class="chapter-item"><div class="chapter-num done">✓</div><div class="chapter-info"><div class="chapter-name">3. 主图与副图规范</div><div class="chapter-dur">18分钟</div></div><div class="chapter-status">✅ 已学</div></div>
+        <div class="chapter-item"><div class="chapter-num done">✓</div><div class="chapter-info"><div class="chapter-name">4. 要点描述(Bullet Points)</div><div class="chapter-dur">20分钟</div></div><div class="chapter-status">✅ 已学</div></div>
+        <div class="chapter-item"><div class="chapter-num">5</div><div class="chapter-info"><div class="chapter-name">5. 后台关键词设置</div><div class="chapter-dur">25分钟</div></div><div class="chapter-status" style="color:#FFC220">继续学习</div></div>
+        <div class="chapter-item"><div class="chapter-num">6</div><div class="chapter-info"><div class="chapter-name">6. A+页面创建</div><div class="chapter-dur">20分钟</div></div><div class="chapter-status" style="color:rgba(255,255,255,0.3)">未解锁</div></div>
+        <div class="chapter-item"><div class="chapter-num">7</div><div class="chapter-info"><div class="chapter-name">7. 移动端优化</div><div class="chapter-dur">15分钟</div></div><div class="chapter-status" style="color:rgba(255,255,255,0.3)">未解锁</div></div>
+        <div class="chapter-item"><div class="chapter-num">8</div><div class="chapter-info"><div class="chapter-name">8. 案例分析</div><div class="chapter-dur">20分钟</div></div><div class="chapter-status" style="color:rgba(255,255,255,0.3)">未解锁</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="c-bottom-bar">
+    <button class="c-bottom-btn secondary">收藏</button>
+    <button class="c-bottom-btn primary">继续学习 →</button>
+  </div>
+</div>
+
+<!-- ===== 4. 成长中心 ===== -->
+<div class="page" id="page-growth">
+  <header class="header"><div style="font-size:17px;font-weight:700;">成长中心</div><div class="hdr-btns"><button class="hdr-btn"><i class="ph ph-clipboard-text" style="font-size:18px"></i></button></div></header>
+  <div class="gh-hero glass-card">
+    <div class="gh-icon"><i class="ph-bold ph-star" style="font-size:48px;color:white"></i></div>
+    <div class="gh-name">进阶卖家 · Lv2</div>
+    <div class="gh-val">成长值: 195</div>
+    <div class="gh-prog"><div class="gh-prog-fill"></div></div>
+    <div class="gh-next">距离高手卖家(Lv3)还需 105 成长值</div>
+  </div>
+  <div class="section-title">等级权益预览</div>
+  <div style="padding: 0 16px; display: flex; gap: 8px; overflow-x: auto;">
+    <div class="glass-card" style="padding: 14px; text-align: center; min-width: 90px; opacity: 0.5;"><div style="font-size: 24px; margin-bottom: 4px;">🌱</div><div style="font-size: 11px;">萌新卖家</div><div style="font-size: 10px; color: rgba(255,255,255,0.4);">Lv1</div></div>
+    <div class="glass-card" style="padding: 14px; text-align: center; min-width: 90px; border-color: rgba(255,194,32,0.3);"><div style="font-size: 24px; margin-bottom: 4px;">🌟</div><div style="font-size: 11px; color: #FFC220;">进阶卖家</div><div style="font-size: 10px; color: #FFC220;">Lv2</div></div>
+    <div class="glass-card" style="padding: 14px; text-align: center; min-width: 90px; opacity: 0.5;"><div style="font-size: 24px; margin-bottom: 4px;">🔥</div><div style="font-size: 11px;">高手卖家</div><div style="font-size: 10px; color: rgba(255,255,255,0.4);">Lv3</div></div>
+    <div class="glass-card" style="padding: 14px; text-align: center; min-width: 90px; opacity: 0.5;"><div style="font-size: 24px; margin-bottom: 4px;">👑</div><div style="font-size: 11px;">大师卖家</div><div style="font-size: 10px; color: rgba(255,255,255,0.4);">Lv4</div></div>
+    <div class="glass-card" style="padding: 14px; text-align: center; min-width: 90px; opacity: 0.5;"><div style="font-size: 24px; margin-bottom: 4px;">💎</div><div style="font-size: 11px;">传奇卖家</div><div style="font-size: 10px; color: rgba(255,255,255,0.4);">Lv5</div></div>
+  </div>
+  <div class="section-title">我的勋章</div>
+  <div class="badges-grid">
+    <div class="badge-item" onclick="switchTab('page-badges')"><div class="badge-icon"><i class="ph ph-target" style="font-size:24px;color:white"></i></div><div class="badge-name">首课达人</div></div>
+    <div class="badge-item" onclick="switchTab('page-badges')"><div class="badge-icon"><i class="ph ph-fire" style="font-size:24px;color:white"></i></div><div class="badge-name">三连胜</div></div>
+    <div class="badge-item" onclick="switchTab('page-badges')"><div class="badge-icon"><i class="ph ph-books" style="font-size:24px;color:white"></i></div><div class="badge-name">学习达人</div></div>
+    <div class="badge-item" onclick="switchTab('page-badges')"><div class="badge-icon"><i class="ph ph-seal-check" style="font-size:24px;color:white"></i></div><div class="badge-name">满分通关</div></div>
+    <div class="badge-item" onclick="switchTab('page-badges')"><div class="badge-icon"><i class="ph ph-trophy" style="font-size:24px;color:white"></i></div><div class="badge-name">全勤学员</div></div>
+    <div class="badge-item"><div class="badge-icon locked"><i class="ph ph-lock-simple" style="font-size:24px;color:white"></i></div><div class="badge-name">挑战之星</div></div>
+    <div class="badge-item"><div class="badge-icon locked"><i class="ph ph-lock-simple" style="font-size:24px;color:white"></i></div><div class="badge-name">GMV之星</div></div>
+    <div class="badge-item"><div class="badge-icon locked"><i class="ph ph-lock-simple" style="font-size:24px;color:white"></i></div><div class="badge-name">增长先锋</div></div>
+  </div>
+  <div class="section-title">成长任务</div>
+  <div class="task-list">
+    <div class="task-item glass-card"><div class="task-icon"><i class="ph ph-book-open" style="font-size:18px;color:white"></i></div><div class="task-info"><div class="task-name">完成「Listing优化」课程</div><div class="task-desc">进度 5/8节</div></div><div class="task-reward">+20</div></div>
+    <div class="task-item glass-card" onclick="switchTab('page-exam')"><div class="task-icon"><i class="ph ph-graduation-cap" style="font-size:18px;color:white"></i></div><div class="task-info"><div class="task-name">通过Lv3 AI考核</div><div class="task-desc">完成课程后解锁</div></div><div class="task-reward">+50</div></div>
+    <div class="task-item glass-card"><div class="task-icon"><i class="ph ph-calendar-check" style="font-size:18px;color:white"></i></div><div class="task-info"><div class="task-name">每日签到</div><div class="task-desc">今日已签到 ✅</div></div><div class="task-reward">+2</div></div>
+    <div class="task-item glass-card"><div class="task-icon"><i class="ph ph-users-three" style="font-size:18px;color:white"></i></div><div class="task-info"><div class="task-name">邀请新卖家注册</div><div class="task-desc">已邀请 2 人</div></div><div class="task-reward">+10/人</div></div>
+  </div>
+</div>
+
+<!-- ===== 5. 任务中心 ===== -->
+<div class="page" id="page-tasks">
+  <header class="header"><div style="font-size:17px;font-weight:700;">任务中心</div><div class="hdr-btns"><button class="hdr-btn"><i class="ph ph-scroll" style="font-size:18px"></i></button></div></header>
+  <div class="task-center-tabs">
+    <div class="task-ct-tab active" onclick="activateTab(this)">全部任务</div>
+    <div class="task-ct-tab" onclick="activateTab(this)">📅 每日任务</div>
+    <div class="task-ct-tab" onclick="activateTab(this)">📈 成长任务</div>
+    <div class="task-ct-tab" onclick="activateTab(this)">⚡ 挑战任务</div>
+  </div>
+  <div class="section-title">今日可完成</div>
+  <div class="task-ct-list">
+    <div class="task-ct-item glass-card">
+      <div class="task-ct-left daily"><i class="ph ph-calendar-check" style="font-size:18px;color:white"></i></div>
+      <div class="task-ct-info"><div class="task-ct-name">每日签到</div><div class="task-ct-desc">连续签到可获得额外奖励</div><div class="task-ct-prog"><div class="task-ct-prog-fill" style="width:43%"></div></div></div>
+      <div class="task-ct-reward"><div class="task-ct-reward-val">+2</div><div class="task-ct-reward-label">成长值</div><button class="task-ct-btn">签到</button></div>
+    </div>
+    <div class="task-ct-item glass-card">
+      <div class="task-ct-left daily"><i class="ph ph-book-open" style="font-size:18px;color:white"></i></div>
+      <div class="task-ct-info"><div class="task-ct-name">完成1节公开课</div><div class="task-ct-desc">观看任意公开课并完成</div></div>
+      <div class="task-ct-reward"><div class="task-ct-reward-val">+5</div><div class="task-ct-reward-label">成长值</div><button class="task-ct-btn">去完成</button></div>
+    </div>
+    <div class="task-ct-item glass-card">
+      <div class="task-ct-left daily"><i class="ph ph-share-network" style="font-size:18px;color:white"></i></div>
+      <div class="task-ct-info"><div class="task-ct-name">分享课程给好友</div><div class="task-ct-desc">分享任意课程到微信</div></div>
+      <div class="task-ct-reward"><div class="task-ct-reward-val">+3</div><div class="task-ct-reward-label">成长值</div><button class="task-ct-btn">分享</button></div>
+    </div>
+  </div>
+  <div class="section-title">成长任务</div>
+  <div class="task-ct-list">
+    <div class="task-ct-item glass-card">
+      <div class="task-ct-left growth"><i class="ph ph-package" style="font-size:18px;color:white"></i></div>
+      <div class="task-ct-info"><div class="task-ct-name">完成「Listing优化」课程</div><div class="task-ct-desc">进度 5/8节</div><div class="task-ct-prog"><div class="task-ct-prog-fill" style="width:63%"></div></div></div>
+      <div class="task-ct-reward"><div class="task-ct-reward-val">+20</div><div class="task-ct-reward-label">成长值</div><button class="task-ct-btn">继续</button></div>
+    </div>
+    <div class="task-ct-item glass-card">
+      <div class="task-ct-left growth"><i class="ph ph-books" style="font-size:18px;color:white"></i></div>
+      <div class="task-ct-info"><div class="task-ct-name">完成3门课程解锁Lv3</div><div class="task-ct-desc">已完成 1/3</div><div class="task-ct-prog"><div class="task-ct-prog-fill" style="width:33%"></div></div></div>
+      <div class="task-ct-reward"><div class="task-ct-reward-val">+50</div><div class="task-ct-reward-label">成长值</div><button class="task-ct-btn">去完成</button></div>
+    </div>
+  </div>
+  <div class="section-title">挑战任务</div>
+  <div class="task-ct-list">
+    <div class="task-ct-item glass-card">
+      <div class="task-ct-left challenge"><i class="ph ph-lightning" style="font-size:18px;color:white"></i></div>
+      <div class="task-ct-info"><div class="task-ct-name">连续7天完成每日任务</div><div class="task-ct-desc">进度 3/7天 · 连胜进行中</div><div class="task-ct-prog"><div class="task-ct-prog-fill" style="width:43%"></div></div></div>
+      <div class="task-ct-reward"><div class="task-ct-reward-val">🏅</div><div class="task-ct-reward-label">限定勋章</div><button class="task-ct-btn">进行中</button></div>
+    </div>
+    <div class="task-ct-item glass-card">
+      <div class="task-ct-left challenge"><i class="ph ph-graduation-cap" style="font-size:18px;color:white"></i></div>
+      <div class="task-ct-info"><div class="task-ct-name">通过Lv3 AI考核</div><div class="task-ct-desc">需完成前置课程</div></div>
+      <div class="task-ct-reward"><div class="task-ct-reward-val">+50</div><div class="task-ct-reward-label">成长值</div><button class="task-ct-btn done" onclick="switchTab('page-exam')">去考核</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 6. 勋章墙 ===== -->
+<div class="page" id="page-badges">
+  <header class="header"><div style="font-size:17px;font-weight:700;">勋章墙</div><div class="hdr-btns"><button class="hdr-btn"><i class="ph ph-info" style="font-size:18px"></i></button></div></header>
+  <div class="badge-wall">
+    <div class="badge-wall-category">
+      <div class="bwc-title">📚 课程勋章</div>
+      <div class="bwc-grid">
+        <div class="bwc-item"><div class="bwc-icon"><i class="ph ph-target" style="font-size:28px;color:white"></i></div><div class="bwc-name">首课达人</div><div class="bwc-condition">完成首节课程</div></div>
+        <div class="bwc-item"><div class="bwc-icon"><i class="ph ph-books" style="font-size:28px;color:white"></i></div><div class="bwc-name">学习达人</div><div class="bwc-condition">完成5门课程</div></div>
+        <div class="bwc-item"><div class="bwc-icon"><i class="ph ph-trophy" style="font-size:28px;color:white"></i></div><div class="bwc-name">全勤学员</div><div class="bwc-condition">连续30天学习</div></div>
+        <div class="bwc-item"><div class="bwc-icon locked"><i class="ph ph-scroll" style="font-size:18px"></i></div><div class="bwc-name">学霸认证</div><div class="bwc-condition">完成全部课程</div></div>
+      </div>
+    </div>
+    <div class="badge-wall-category">
+      <div class="bwc-title">⚡ 挑战勋章</div>
+      <div class="bwc-grid">
+        <div class="bwc-item"><div class="bwc-icon"><i class="ph ph-fire" style="font-size:28px;color:white"></i></div><div class="bwc-name">三连胜</div><div class="bwc-condition">连续3天完成任务</div></div>
+        <div class="bwc-item"><div class="bwc-icon locked"><i class="ph ph-lightning" style="font-size:28px;color:white"></i></div><div class="bwc-name">挑战之星</div><div class="bwc-condition">完成10个挑战任务</div></div>
+        <div class="bwc-item"><div class="bwc-icon locked"><i class="ph ph-barbell" style="font-size:28px;color:white"></i></div><div class="bwc-name">不屈意志</div><div class="bwc-condition">连续7天完成任务</div></div>
+        <div class="bwc-item"><div class="bwc-icon locked"><i class="ph ph-sparkle" style="font-size:28px;color:white"></i></div><div class="bwc-name">全能选手</div><div class="bwc-condition">完成所有类型任务</div></div>
+      </div>
+    </div>
+    <div class="badge-wall-category">
+      <div class="bwc-title">🎓 考核勋章</div>
+      <div class="bwc-grid">
+        <div class="bwc-item"><div class="bwc-icon"><i class="ph ph-seal-check" style="font-size:28px;color:white"></i></div><div class="bwc-name">满分通关</div><div class="bwc-condition">AI考核满分通过</div></div>
+        <div class="bwc-item"><div class="bwc-icon"><i class="ph ph-medal-military" style="font-size:28px;color:white"></i></div><div class="bwc-name">一次过</div><div class="bwc-condition">首次考核即通过</div></div>
+        <div class="bwc-item"><div class="bwc-icon locked"><i class="ph ph-crown" style="font-size:28px;color:white"></i></div><div class="bwc-name">终极认证</div><div class="bwc-condition">通过全部等级考核</div></div>
+      </div>
+    </div>
+    <div class="badge-wall-category">
+      <div class="bwc-title">🏆 运营勋章</div>
+      <div class="bwc-grid">
+        <div class="bwc-item"><div class="bwc-icon locked"><i class="ph ph-currency-circle-dollar" style="font-size:28px;color:white"></i></div><div class="bwc-name">GMV之星</div><div class="bwc-condition">月GMV达标</div></div>
+        <div class="bwc-item"><div class="bwc-icon locked"><i class="ph ph-trend-up" style="font-size:28px;color:white"></i></div><div class="bwc-name">增长先锋</div><div class="bwc-condition">月增长率>20%</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 7. AI考核 ===== -->
+<div class="page" id="page-exam">
+  <div class="back-btn" onclick="backTo('page-growth')">‹ 返回成长中心</div>
+  <div class="exam-info">
+    <div class="exam-level"><span class="exam-level-badge">Lv3</span><span class="exam-level-name">高手卖家 AI 考核</span></div>
+    <div class="exam-desc">根据你即将晋升的等级，AI将自动生成对应难度的考核试题。通过考核即可晋升为<strong style="color:#FFC220">高手卖家</strong>，解锁更多课程和权益。</div>
+    <div class="exam-rules">
+      <div class="exam-rules-title">📋 考核规则</div>
+      <div class="exam-rule-item"><span>题型:</span> 单选10题 + 判断5题</div>
+      <div class="exam-rule-item"><span>时长:</span> 15分钟</div>
+      <div class="exam-rule-item"><span>通过标准:</span> 80%正确率（12/15题）</div>
+      <div class="exam-rule-item"><span>重考:</span> 24小时后可重考</div>
+      <div class="exam-rule-item"><span>前置条件:</span> 需完成3门指定课程</div>
+    </div>
+    <div class="glass-card" style="padding:14px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">📊 当前准备度</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:4px;">已完成课程: 3/3 ✅</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:4px;">成长值: 195/300 ⚠️ 还差105</div>
+      <div style="font-size:12px;color:#FFC220;">提示: 完成更多任务可加速成长值积累</div>
+    </div>
+    <button class="start-exam-btn" onclick="showModal('exam-start-modal')">🚀 开始考核</button>
+  </div>
+</div>
+
+<!-- ===== 8. 考核结果页 ===== -->
+<div class="page" id="page-exam-result">
+  <div class="result-card glass-card">
+    <div class="result-score">92</div>
+    <div class="result-label">分</div>
+    <div class="result-status" style="color: #52c41a;">🎉 恭喜通过！</div>
+    <div class="result-detail">
+      <div class="result-detail-item"><div class="result-detail-val">14/15</div><div class="result-detail-label">正确题数</div></div>
+      <div class="result-detail-item"><div class="result-detail-val">8:32</div><div class="result-detail-label">用时</div></div>
+      <div class="result-detail-item"><div class="result-detail-val">+50</div><div class="result-detail-label">获得成长值</div></div>
+    </div>
+    <button class="result-btn primary" onclick="switchTab('page-growth')">查看成长中心 →</button>
+    <button class="result-btn secondary" onclick="switchTab('page-home')">返回首页</button>
+  </div>
+</div>
+
+<!-- ===== 9. 快速入驻 ===== -->
+<div class="page" id="page-onboard">
+  <div class="onboard-hero">
+    <div class="onboard-icon">🚀</div>
+    <div class="onboard-title">快速入驻沃尔玛</div>
+    <div class="onboard-desc">只需3步，即可开始您的沃尔玛跨境之旅<br>已有小程序组件，直接复用现有入驻系统</div>
+  </div>
+  <div class="onboard-steps">
+    <div class="onboard-step"><div class="onboard-step-num">1</div><div class="onboard-step-content"><div class="onboard-step-title">手机号授权</div><div class="onboard-step-desc">使用手机号快速注册，仅需1分钟</div></div></div>
+    <div class="onboard-step"><div class="onboard-step-num">2</div><div class="onboard-step-content"><div class="onboard-step-title">完善企业信息</div><div class="onboard-step-desc">填写公司名称、税号等基础信息</div></div></div>
+    <div class="onboard-step"><div class="onboard-step-num">3</div><div class="onboard-step-content"><div class="onboard-step-title">关注服务号</div><div class="onboard-step-desc">关注「沃尔玛卖家服务」获取最新资讯</div></div></div>
+  </div>
+  <button class="onboard-btn" onclick="showModal('onboard-modal')">🚀 立即入驻</button>
+  <button class="onboard-btn secondary" onclick="backTo('page-home')">返回首页</button>
+</div>
+
+<!-- ===== 10. 我的 ===== -->
+<div class="page" id="page-mine">
+  <header class="header"><div style="font-size:17px;font-weight:700;">我的</div><div class="hdr-btns"><button class="hdr-btn"><i class="ph ph-gear" style="font-size:18px"></i></button></div></header>
+  <div class="profile-card glass-card">
+    <div class="avatar"><i class="ph-bold ph-user" style="font-size:28px;color:#1a1145"></i></div>
+    <div class="username">深圳优品科技</div>
+    <div class="user-id">ID: WM-2026-88721</div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num">Lv2</div><div class="stat-label">当前等级</div></div>
+      <div class="stat"><div class="stat-num">195</div><div class="stat-label">成长值</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">勋章</div></div>
+      <div class="stat"><div class="stat-num">8</div><div class="stat-label">已学课程</div></div>
+    </div>
+  </div>
+  <div class="section-title">学习管理</div>
+  <div class="menu-list">
+    <div class="menu-item glass-card" onclick="showModal('developing-modal')"><span class="menu-icon"><i class="ph ph-chart-bar"></i></span><span class="menu-text">我的学习记录</span><span class="menu-arrow">›</span></div>
+    <div class="menu-item glass-card" onclick="switchTab('page-badges')"><span class="menu-icon"><i class="ph ph-medal"></i></span><span class="menu-text">我的勋章</span><span class="menu-arrow">›</span></div>
+    <div class="menu-item glass-card"><span class="menu-icon"><i class="ph ph-gift"></i></span><span class="menu-text">我的权益</span><span class="menu-arrow">›</span></div>
+    <div class="menu-item glass-card"><span class="menu-icon"><i class="ph ph-clipboard-text" style="font-size:18px"></i></span><span class="menu-text">考核记录</span><span class="menu-arrow">›</span></div>
+  </div>
+  <div class="section-title">账号设置</div>
+  <div class="menu-list">
+    <div class="menu-item glass-card" onclick="showModal('notif-modal')"><span class="menu-icon"><i class="ph ph-bell-ringing"></i></span><span class="menu-text">消息通知</span><span class="menu-arrow">›</span></div>
+    <div class="menu-item glass-card"><span class="menu-icon"><i class="ph ph-device-mobile"></i></span><span class="menu-text">关注服务号</span><span class="menu-arrow">›</span></div>
+    <div class="menu-item glass-card"><span class="menu-icon"><i class="ph ph-question"></i></span><span class="menu-text">帮助与反馈</span><span class="menu-arrow">›</span></div>
+  </div>
+</div>
+
+
+<!-- ===== 11. 入驻页 ===== -->
+<div class="page" id="page-join" style="padding-bottom:90px">
+  <header class="header"><div style="font-size:17px;font-weight:700;">即刻入驻</div><div class="hdr-btns"></div></header>
+  <div style="width:100%;height:160px;display:flex;align-items:center;justify-content:center;font-size:56px;background:linear-gradient(135deg,#004C91,#FFC220)"><i class="ph ph-rocket-launch" style="font-size:56px;color:white"></i></div>
+  <div style="padding:20px 16px;text-align:center">
+    <div style="font-size:20px;font-weight:800;margin-bottom:6px">即刻入驻沃尔玛</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.6">三步开启您的沃尔玛跨境之旅<br>覆盖美国/加拿大/墨西哥三大站点</div>
+  </div>
+  <div class="section-title">选择站点</div>
+  <div style="padding:0 16px;display:flex;gap:10px">
+    <div class="glass-card" style="flex:1;padding:16px;text-align:center;cursor:pointer">
+      <div style="font-size:32px;margin-bottom:6px">🇺🇸</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px">美国站</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5)">最大消费市场<br>月活1.5亿+</div>
+      <div style="margin-top:8px;padding:6px 0;background:rgba(255,194,32,0.15);color:#FFC220;border-radius:6px;font-size:12px;font-weight:600">选择站点</div>
+    </div>
+    <div class="glass-card" style="flex:1;padding:16px;text-align:center;cursor:pointer">
+      <div style="font-size:32px;margin-bottom:6px">🇨🇦</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px">加拿大站</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5)">北美新兴市场<br>增速快门槛低</div>
+      <div style="margin-top:8px;padding:6px 0;background:rgba(255,194,32,0.15);color:#FFC220;border-radius:6px;font-size:12px;font-weight:600">选择站点</div>
+    </div>
+    <div class="glass-card" style="flex:1;padding:16px;text-align:center;cursor:pointer">
+      <div style="font-size:32px;margin-bottom:6px">🇲🇽</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px">墨西哥站</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5)">拉美门户<br>竞争小蓝海</div>
+      <div style="margin-top:8px;padding:6px 0;background:rgba(255,194,32,0.15);color:#FFC220;border-radius:6px;font-size:12px;font-weight:600">选择站点</div>
+    </div>
+  </div>
+  <div class="section-title">入驻流程</div>
+  <div style="padding:0 16px">
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
+      <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,194,32,0.15);display:flex;align-items:center;justify-content:center;font-weight:800;color:#FFC220;flex-shrink:0">1</div>
+      <div><div style="font-size:14px;font-weight:600">提交入驻申请</div><div style="font-size:12px;color:rgba(255,255,255,0.5)">填写公司基本信息，选择目标站点</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
+      <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,194,32,0.15);display:flex;align-items:center;justify-content:center;font-weight:800;color:#FFC220;flex-shrink:0">2</div>
+      <div><div style="font-size:14px;font-weight:600">资质审核</div><div style="font-size:12px;color:rgba(255,255,255,0.5)">1-3个工作日完成资质审核</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
+      <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,194,32,0.15);display:flex;align-items:center;justify-content:center;font-weight:800;color:#FFC220;flex-shrink:0">3</div>
+      <div><div style="font-size:14px;font-weight:600">签署协议</div><div style="font-size:12px;color:rgba(255,255,255,0.5)">在线签署卖家入驻协议</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
+      <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,194,32,0.15);display:flex;align-items:center;justify-content:center;font-weight:800;color:#FFC220;flex-shrink:0">4</div>
+      <div><div style="font-size:14px;font-weight:600">完善店铺信息</div><div style="font-size:12px;color:rgba(255,255,255,0.5)">上传商品、设置定价、配置物流</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 0">
+      <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,194,32,0.15);display:flex;align-items:center;justify-content:center;font-weight:800;color:#FFC220;flex-shrink:0">5</div>
+      <div><div style="font-size:14px;font-weight:600">正式开店</div><div style="font-size:12px;color:rgba(255,255,255,0.5)">开始销售，享受专属扶持政策</div></div>
+    </div>
+  </div>
+  <div style="padding:0 16px;margin-top:16px;display:flex;gap:10px;width:100%;box-sizing:border-box">
+    <button class="onboard-btn" onclick="showModal('onboard-modal')">📝 填写入驻表单</button>
+    <button class="onboard-btn secondary" onclick="showModal('developing-modal')">📞 联系招商经理</button>
+  </div>
+</div>
+
+<!-- ===== 12. 社区/留言板页 ===== -->
+<div class="page" id="page-community" style="padding-bottom:90px">
+  <header class="header"><div style="font-size:17px;font-weight:700;">卖家社区</div><div class="hdr-btns"><button class="hdr-btn"><i class="ph ph-magnifying-glass" style="font-size:18px"></i></button></div></header>
+  <div class="course-tabs">
+    <div class="c-tab active" onclick="activateTab(this);toggleCommunity(this,'qa')">💬 问答</div>
+    <div class="c-tab" onclick="activateTab(this);toggleCommunity(this,'forum')">📢 论坛</div>
+    <div class="c-tab" onclick="activateTab(this);toggleCommunity(this,'feedback')">📝 反馈</div>
+  </div>
+  <div id="comm-qa">
+    <div style="padding:0 16px;margin-bottom:12px">
+      <div class="glass-card" style="padding:10px 14px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08)">
+        <span style="font-size:16px"><i class="ph ph-magnifying-glass" style="font-size:18px"></i></span>
+        <span style="font-size:13px;color:rgba(255,255,255,0.4)">搜索你想问的问题...</span>
+      </div>
+    </div>
+    <div style="padding:0 16px"><div style="font-size:13px;font-weight:600;margin-bottom:8px;color:rgba(255,255,255,0.7)">热门问题</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+        <span class="tag" style="cursor:pointer">入驻流程</span>
+        <span class="tag" style="cursor:pointer">佣金费率</span>
+        <span class="tag" style="cursor:pointer">WFS物流</span>
+        <span class="tag" style="cursor:pointer">广告投放</span>
+        <span class="tag" style="cursor:pointer">退货政策</span>
+        <span class="tag" style="cursor:pointer">品牌注册</span>
+      </div>
+    </div>
+    <div class="section-title">热门问答</div>
+    <div style="padding:0 16px">
+      <div class="glass-card" style="padding:14px;margin-bottom:10px;cursor:pointer" onclick="switchTab('page-article',this)">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:14px;font-weight:600;flex:1">WFS头程物流费用怎么计算？</span><span style="font-size:11px;color:rgba(255,255,255,0.3)">2小时前</span></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:8px">官方回复：WFS费用包含仓储费+配送费+操作费三部分...</div>
+        <div style="display:flex;gap:16px;font-size:11px;color:rgba(255,255,255,0.4)"><span>👍 45</span><span>💬 12 回复</span></div>
+      </div>
+      <div class="glass-card" style="padding:14px;margin-bottom:10px;cursor:pointer" onclick="switchTab('page-article',this)">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:14px;font-weight:600;flex:1">品牌注册需要什么资料？</span><span style="font-size:11px;color:rgba(255,255,255,0.3)">5小时前</span></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:8px">官方回复：品牌注册需要商标注册证书+品牌授权书...</div>
+        <div style="display:flex;gap:16px;font-size:11px;color:rgba(255,255,255,0.4)"><span>👍 38</span><span>💬 8 回复</span></div>
+      </div>
+      <div class="glass-card" style="padding:14px;margin-bottom:10px;cursor:pointer" onclick="switchTab('page-article',this)">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:14px;font-weight:600;flex:1">广告预算建议多少合适？</span><span style="font-size:11px;color:rgba(255,255,255,0.3)">1天前</span></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:8px">官方回复：建议初期月广告预算控制在销售额的15-20%...</div>
+        <div style="display:flex;gap:16px;font-size:11px;color:rgba(255,255,255,0.4)"><span>👍 67</span><span>💬 23 回复</span></div>
+      </div>
+      <div class="glass-card" style="padding:14px;margin-bottom:10px;cursor:pointer">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:14px;font-weight:600;flex:1">如何申请加拿大站点？</span><span style="font-size:11px;color:rgba(255,255,255,0.3)">2天前</span></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:8px">暂无回复，等待官方解答中...</div>
+        <div style="display:flex;gap:16px;font-size:11px;color:rgba(255,255,255,0.4)"><span>👍 12</span><span>💬 0 回复</span></div>
+      </div>
+      <div class="glass-card" style="padding:14px;margin-bottom:10px;cursor:pointer">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:14px;font-weight:600;flex:1">Listing被下架申诉流程</span><span style="font-size:11px;color:rgba(255,255,255,0.3)">3天前</span></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:8px">暂无回复，等待官方解答中...</div>
+        <div style="display:flex;gap:16px;font-size:11px;color:rgba(255,255,255,0.4)"><span>👍 8</span><span>💬 0 回复</span></div>
+      </div>
+    </div>
+    <button class="onboard-btn" style="margin-top:8px" onclick="showModal('developing-modal')">✍️ 我要提问</button>
+  </div>
+  <div id="comm-forum" style="display:none">
+    <div class="section-title">最新帖子</div>
+    <div style="padding:0 16px">
+      <div class="glass-card" style="padding:14px;margin-bottom:10px;cursor:pointer">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#FFC220,#ff9500);display:flex;align-items:center;justify-content:center;font-size:14px">👤</div>
+          <div><div style="font-size:13px;font-weight:600">深圳优品科技</div><div style="font-size:11px;color:rgba(255,255,255,0.4)">2小时前</div></div>
+        </div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px">分享：我们的WFS使用体验及注意事项</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:8px">入驻3个月，分享一些WFS使用的实际经验和避坑指南...</div>
+        <div style="display:flex;gap:16px;font-size:11px;color:rgba(255,255,255,0.4)"><span>👍 128</span><span>💬 45 评论</span><span>🔄 23 转发</span></div>
+      </div>
+      <div class="glass-card" style="padding:14px;margin-bottom:10px;cursor:pointer">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#4a90d9,#00cec9);display:flex;align-items:center;justify-content:center;font-size:14px">👤</div>
+          <div><div style="font-size:13px;font-weight:600">杭州星辰贸易</div><div style="font-size:11px;color:rgba(255,255,255,0.4)">5小时前</div></div>
+        </div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px">Q3新品备货节奏建议</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:8px">根据往年的销售数据和今年的市场趋势，建议大家在6月中完成备货...</div>
+        <div style="display:flex;gap:16px;font-size:11px;color:rgba(255,255,255,0.4)"><span>👍 89</span><span>💬 32 评论</span><span>🔄 15 转发</span></div>
+      </div>
+      <div class="glass-card" style="padding:14px;margin-bottom:10px;cursor:pointer">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6c5ce7,#a29bfe);display:flex;align-items:center;justify-content:center;font-size:14px">👤</div>
+          <div><div style="font-size:13px;font-weight:600">广州跨境优选</div><div style="font-size:11px;color:rgba(255,255,255,0.4)">1天前</div></div>
+        </div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px">广告ACoS优化心得分享</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:8px">从35%优化到18%的历程，关键词筛选是核心...</div>
+        <div style="display:flex;gap:16px;font-size:11px;color:rgba(255,255,255,0.4)"><span>👍 56</span><span>💬 19 评论</span><span>🔄 8 转发</span></div>
+      </div>
+    </div>
+  </div>
+  <div id="comm-feedback" style="display:none">
+    <div class="section-title">提交反馈</div>
+    <div style="padding:0 16px">
+      <div class="glass-card" style="padding:16px">
+        <div style="font-size:14px;font-weight:600;margin-bottom:12px">📝 反馈类型</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+          <span class="tag" style="cursor:pointer">功能建议</span>
+          <span class="tag" style="cursor:pointer">Bug反馈</span>
+          <span class="tag" style="cursor:pointer">内容问题</span>
+          <span class="tag" style="cursor:pointer">其他</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:8px">📋 详细描述</div>
+        <textarea style="width:100%;height:120px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;color:#fff;font-size:13px;resize:none;outline:none;box-sizing:border-box" placeholder="请详细描述您遇到的问题或建议..."></textarea>
+        <div style="font-size:14px;font-weight:600;margin:12px 0 8px">📷 上传截图（可选）</div>
+        <div style="padding:30px;border:2px dashed rgba(255,255,255,0.1);border-radius:10px;text-align:center;color:rgba(255,255,255,0.4);font-size:13px">点击或拖拽上传图片</div>
+        <button class="onboard-btn" style="margin-top:16px" onclick="showModal('developing-modal')">提交反馈</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 13. 实用工具页 ===== -->
+<div class="page" id="page-tools" style="padding-bottom:90px">
+  <div class="back-btn" onclick="backTo('page-home')">‹ 返回首页</div>
+  <div style="padding:16px;text-align:center">
+    <div style="font-size:36px;margin-bottom:8px">🛠️</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:4px">实用工具</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.6)">聚焦业务实操，提升运营效率</div>
+  </div>
+  <div style="padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="glass-card" style="padding:20px 16px;text-align:center;cursor:pointer" onclick="showModal('developing-modal')">
+      <div style="font-size:36px;margin-bottom:8px">🧮</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">佣金计算</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5)">快速估算各品类佣金</div>
+    </div>
+    <div class="glass-card" style="padding:20px 16px;text-align:center;cursor:pointer" onclick="showModal('developing-modal')">
+      <div style="font-size:36px;margin-bottom:8px">🤝</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">服务商伙伴</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5)">认证服务商推荐</div>
+    </div>
+    <div class="glass-card" style="padding:20px 16px;text-align:center;cursor:pointer" onclick="switchTab('page-growth')">
+      <div style="font-size:36px;margin-bottom:8px">📈</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">卖家成长</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5)">等级进度与权益</div>
+    </div>
+    <div class="glass-card" style="padding:20px 16px;text-align:center;cursor:pointer" onclick="showModal('developing-modal')">
+      <div style="font-size:36px;margin-bottom:8px">👔</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">联系经理</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5)">一键联系您的招商经理</div>
+    </div>
+    <div class="glass-card" style="padding:20px 16px;text-align:center;cursor:pointer" onclick="showModal('summit-modal')">
+      <div style="font-size:36px;margin-bottom:8px">🎪</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">活动信息</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5)">最新平台活动汇总</div>
+    </div>
+    <div class="glass-card" style="padding:20px 16px;text-align:center;cursor:pointer" onclick="switchTab('page-course')">
+      <div style="font-size:36px;margin-bottom:8px">📖</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">新手必读</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5)">卖家入门核心指南</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 14. 站点介绍页 ===== -->
+<div class="page" id="page-sites" style="padding-bottom:90px">
+  <div class="back-btn" onclick="backTo('page-home')">‹ 返回首页</div>
+  <div style="padding:20px 16px;text-align:center">
+    <div style="font-size:18px;font-weight:700;margin-bottom:4px">沃尔玛全球站点</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.6)">覆盖北美三大市场，一站式出海方案</div>
+  </div>
+  <div style="padding:0 16px;display:flex;flex-direction:column;gap:14px">
+    <div class="glass-card" style="padding:20px;cursor:pointer">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:40px">🇺🇸</span><div><div style="font-size:16px;font-weight:700">Walmart.com 美国站</div><div style="font-size:12px;color:#FFC220">月活1.5亿+ · 全球最大电商市场</div></div></div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:12px">全球访问量最大的电商平台，消费者购买力强，客单价高。支持WFS物流体系，提供完善的卖家保护政策。</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag-blue">WFS物流</span><span class="tag-blue">2日达</span><span class="tag-blue">Prime竞争</span></div>
+    </div>
+    <div class="glass-card" style="padding:20px;cursor:pointer">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:40px">🇨🇦</span><div><div style="font-size:16px;font-weight:700">Walmart.ca 加拿大站</div><div style="font-size:12px;color:#FFC220">增速最快 · 门槛相对较低</div></div></div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:12px">北美增长最快的电商市场之一，竞争相对较小。已有成熟物流网络覆盖，新手卖家友好。</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag-blue">低竞争</span><span class="tag-blue">快速增长</span><span class="tag-blue">门槛低</span></div>
+    </div>
+    <div class="glass-card" style="padding:20px;cursor:pointer">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:40px">🇲🇽</span><div><div style="font-size:16px;font-weight:700">Walmart.mx 墨西哥站</div><div style="font-size:12px;color:#FFC220">拉美蓝海 · 政策红利期</div></div></div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:12px">拉美最大零售商，跨境电商政策红利期。USMCA协定下关税优惠明显，市场潜力巨大。</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag-blue">蓝海市场</span><span class="tag-blue">USMCA协定</span><span class="tag-blue">高增长</span></div>
+    </div>
+  </div>
+  <div style="padding:16px"><button class="onboard-btn" onclick="showModal('onboard-modal')">🚀 立即入驻</button></div>
+</div>
+
+<!-- ===== 15. 教育中心页 ===== -->
+<div class="page" id="page-education" style="padding-bottom:90px">
+  <div class="back-btn" onclick="backTo('page-home')">‹ 返回首页</div>
+  <div class="course-tabs">
+    <div class="c-tab active" onclick="activateTab(this)">🎙️ 直播</div>
+    <div class="c-tab" onclick="activateTab(this)">📚 课程</div>
+    <div class="c-tab" onclick="activateTab(this)">📄 文档</div>
+  </div>
+  <div class="section-title">近期直播</div>
+  <div style="padding:0 16px">
+    <div class="glass-card" style="padding:16px;margin-bottom:10px;cursor:pointer;border-left:3px solid #52c41a">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:14px;font-weight:600">Q3新政策解读直播</span><span style="background:#52c41a;color:#fff;padding:2px 8px;border-radius:4px;font-size:10px">报名中</span></div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px">📅 6月5日 14:00 · 90分钟</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:8px">官方运营团队深度解读Q3政策变化及应对策略</div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:rgba(255,255,255,0.4)">👥 1,234人已报名</span><span style="background:rgba(255,194,32,0.15);color:#FFC220;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600">立即报名</span></div>
+    </div>
+    <div class="glass-card" style="padding:16px;margin-bottom:10px;cursor:pointer;border-left:3px solid #52c41a">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:14px;font-weight:600">广告投放实操训练营</span><span style="background:#52c41a;color:#fff;padding:2px 8px;border-radius:4px;font-size:10px">报名中</span></div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px">📅 6月10日 19:00 · 120分钟</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:8px">广告专家David手把手教你高ROI投放技巧</div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:rgba(255,255,255,0.4)">👥 890人已报名</span><span style="background:rgba(255,194,32,0.15);color:#FFC220;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600">立即报名</span></div>
+    </div>
+    <div class="glass-card" style="padding:16px;margin-bottom:10px;cursor:pointer;border-left:3px solid rgba(255,255,255,0.1)">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:14px;font-weight:600;color:rgba(255,255,255,0.5)">新手卖家入驻答疑</span><span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);padding:2px 8px;border-radius:4px;font-size:10px">已结束</span></div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:4px">📅 5月28日 · 60分钟</div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:rgba(255,255,255,0.3)">👥 567人观看</span><span style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);padding:4px 12px;border-radius:6px;font-size:12px">查看回放</span></div>
+    </div>
+    <div class="glass-card" style="padding:16px;margin-bottom:10px;cursor:pointer;border-left:3px solid rgba(255,255,255,0.1)">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:14px;font-weight:600;color:rgba(255,255,255,0.5)">Listing优化公开课</span><span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);padding:2px 8px;border-radius:4px;font-size:10px">已结束</span></div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:4px">📅 5月20日 · 90分钟</div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:rgba(255,255,255,0.3)">👥 987人观看</span><span style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);padding:4px 12px;border-radius:6px;font-size:12px">查看回放</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 16. 智能问答页 ===== -->
+<div class="page" id="page-smartqa" style="padding-bottom:90px">
+  <div class="back-btn" onclick="backTo('page-community')">‹ 返回社区</div>
+  <div style="padding:12px 16px">
+    <div class="glass-card" style="padding:12px 16px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:18px"><i class="ph ph-magnifying-glass" style="font-size:18px"></i></span>
+      <input type="text" placeholder="输入您的问题..." style="flex:1;background:none;border:none;outline:none;color:#fff;font-size:14px" onfocus="this.placeholder=''">
+      <span style="color:#FFC220;font-size:14px;cursor:pointer">搜索</span>
+    </div>
+  </div>
+  <div class="section-title">热门标签</div>
+  <div style="padding:0 16px;display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+    <span class="tag" style="cursor:pointer;padding:6px 14px;font-size:12px">入驻流程</span>
+    <span class="tag" style="cursor:pointer;padding:6px 14px;font-size:12px">佣金费率</span>
+    <span class="tag" style="cursor:pointer;padding:6px 14px;font-size:12px">WFS物流</span>
+    <span class="tag" style="cursor:pointer;padding:6px 14px;font-size:12px">广告投放</span>
+    <span class="tag" style="cursor:pointer;padding:6px 14px;font-size:12px">退货政策</span>
+    <span class="tag" style="cursor:pointer;padding:6px 14px;font-size:12px">Listing优化</span>
+    <span class="tag" style="cursor:pointer;padding:6px 14px;font-size:12px">品牌注册</span>
+    <span class="tag" style="cursor:pointer;padding:6px 14px;font-size:12px">收款提现</span>
+  </div>
+  <div class="section-title">常见问题</div>
+  <div style="padding:0 16px">
+    <div class="glass-card" style="padding:14px;margin-bottom:8px;cursor:pointer" onclick="this.querySelector('.qa-answer').style.display=this.querySelector('.qa-answer').style.display==='none'?'block':'none'">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:600">如何入驻沃尔玛平台？</span><span style="color:rgba(255,255,255,0.3);font-size:18px">+</span></div>
+      <div class="qa-answer" style="display:none;margin-top:10px;font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7">入驻需先填写入驻申请，提交公司资质材料，1-3个工作日完成审核，签署协议后即可开店。详情请查看入驻流程页面。</div>
+    </div>
+    <div class="glass-card" style="padding:14px;margin-bottom:8px;cursor:pointer" onclick="this.querySelector('.qa-answer').style.display=this.querySelector('.qa-answer').style.display==='none'?'block':'none'">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:600">佣金费率是多少？</span><span style="color:rgba(255,255,255,0.3);font-size:18px">+</span></div>
+      <div class="qa-answer" style="display:none;margin-top:10px;font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7">佣金费率因品类而异，一般在8%-20%之间。具体费率请使用佣金计算工具查询。</div>
+    </div>
+    <div class="glass-card" style="padding:14px;margin-bottom:8px;cursor:pointer" onclick="this.querySelector('.qa-answer').style.display=this.querySelector('.qa-answer').style.display==='none'?'block':'none'">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:600">WFS物流怎么使用？</span><span style="color:rgba(255,255,255,0.3);font-size:18px">+</span></div>
+      <div class="qa-answer" style="display:none;margin-top:10px;font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7">WFS（Walmart Fulfillment Services）是沃尔玛官方物流服务，类似亚马逊FBA。卖家将货物发送至WFS仓库，平台负责拣货、包装、配送及售后。</div>
+    </div>
+    <div class="glass-card" style="padding:14px;margin-bottom:8px;cursor:pointer" onclick="this.querySelector('.qa-answer').style.display=this.querySelector('.qa-answer').style.display==='none'?'block':'none'">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:600">如何联系招商经理？</span><span style="color:rgba(255,255,255,0.3);font-size:18px">+</span></div>
+      <div class="qa-answer" style="display:none;margin-top:10px;font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7">入驻后系统会自动分配专属招商经理，也可在「实用工具」→「联系经理」中主动联系。</div>
+    </div>
+    <div class="glass-card" style="padding:14px;margin-bottom:8px;cursor:pointer" onclick="this.querySelector('.qa-answer').style.display=this.querySelector('.qa-answer').style.display==='none'?'block':'none'">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:600">广告ACoS怎么优化？</span><span style="color:rgba(255,255,255,0.3);font-size:18px">+</span></div>
+      <div class="qa-answer" style="display:none;margin-top:10px;font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7">建议从关键词筛选入手，精准匹配搜索意图，同时优化Listing转化率。降低ACoS的核心是提升转化率。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 17. 峰会落地页 ===== -->
+<div class="page" id="page-summit" style="padding-bottom:90px">
+  <div style="width:100%;height:200px;display:flex;align-items:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,#001f3f,#004C91,#FFC220);position:relative">
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;flex-direction:column">
+      <div style="font-size:22px;font-weight:800;text-shadow:0 2px 10px rgba(0,0,0,0.3)">2026 沃尔玛全球卖家峰会</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-top:4px">📍 深圳 · 📅 6月15日</div>
+    </div>
+  </div>
+  <div style="padding:16px;text-align:center">
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">峰会亮点</div>
+  </div>
+  <div style="padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+    <div class="glass-card" style="padding:16px;text-align:center"><div style="font-size:28px;margin-bottom:6px">🎤</div><div style="font-size:13px;font-weight:600">大咖分享</div><div style="font-size:11px;color:rgba(255,255,255,0.5)">全球顶尖卖家</div></div>
+    <div class="glass-card" style="padding:16px;text-align:center"><div style="font-size:28px;margin-bottom:6px">📊</div><div style="font-size:13px;font-weight:600">数据洞察</div><div style="font-size:11px;color:rgba(255,255,255,0.5)">平台趋势解读</div></div>
+    <div class="glass-card" style="padding:16px;text-align:center"><div style="font-size:28px;margin-bottom:6px">🤝</div><div style="font-size:13px;font-weight:600">人脉对接</div><div style="font-size:11px;color:rgba(255,255,255,0.5)">优质服务商</div></div>
+    <div class="glass-card" style="padding:16px;text-align:center"><div style="font-size:28px;margin-bottom:6px">🎁</div><div style="font-size:13px;font-weight:600">专属权益</div><div style="font-size:11px;color:rgba(255,255,255,0.5)">Lv3+卖家福利</div></div>
+  </div>
+  <div class="section-title">活动日程</div>
+  <div style="padding:0 16px">
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><div style="font-size:12px;color:#FFC220;white-space:nowrap;min-width:50px">09:00</div><div><div style="font-size:13px;font-weight:600">签到入场</div><div style="font-size:11px;color:rgba(255,255,255,0.4)">一层大厅</div></div></div>
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><div style="font-size:12px;color:#FFC220;white-space:nowrap;min-width:50px">10:00</div><div><div style="font-size:13px;font-weight:600">开幕主题演讲</div><div style="font-size:11px;color:rgba(255,255,255,0.4)">沃尔玛全球电商CEO</div></div></div>
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><div style="font-size:12px;color:#FFC220;white-space:nowrap;min-width:50px">11:30</div><div><div style="font-size:13px;font-weight:600">分论坛：运营增长实战</div><div style="font-size:11px;color:rgba(255,255,255,0.4)">二楼A厅</div></div></div>
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><div style="font-size:12px;color:#FFC220;white-space:nowrap;min-width:50px">14:00</div><div><div style="font-size:13px;font-weight:600">分论坛：物流供应链</div><div style="font-size:11px;color:rgba(255,255,255,0.4)">二楼B厅</div></div></div>
+    <div style="display:flex;gap:12px;padding:12px 0"><div style="font-size:12px;color:#FFC220;white-space:nowrap;min-width:50px">16:00</div><div><div style="font-size:13px;font-weight:600">闭幕 & 晚宴</div><div style="font-size:11px;color:rgba(255,255,255,0.4)">三层宴会厅</div></div></div>
+  </div>
+  <div class="section-title">参会指南</div>
+  <div style="padding:0 16px">
+    <div class="glass-card" style="padding:14px;margin-bottom:8px"><div style="font-size:13px;font-weight:600;margin-bottom:4px">📍 会场地址</div><div style="font-size:12px;color:rgba(255,255,255,0.5)">深圳市南山区科技园科苑路15号 · 沃尔玛大厦</div></div>
+    <div class="glass-card" style="padding:14px;margin-bottom:8px"><div style="font-size:13px;font-weight:600;margin-bottom:4px">🚗 交通方式</div><div style="font-size:12px;color:rgba(255,255,255,0.5)">地铁2号线科苑站C出口步行5分钟 · 会场提供免费停车</div></div>
+    <div class="glass-card" style="padding:14px;margin-bottom:8px"><div style="font-size:13px;font-weight:600;margin-bottom:4px">👔 着装要求</div><div style="font-size:12px;color:rgba(255,255,255,0.5)">商务休闲装</div></div>
+  </div>
+  <div style="padding:16px"><button class="onboard-btn" onclick="showModal('summit-modal')">🎫 立即报名</button></div>
+</div>
+
+<!-- ===== 18. 文章详情页 ===== -->
+<div class="page" id="page-article" style="padding-bottom:90px">
+  <div class="back-btn" onclick="backTo('page-home')">‹ 返回首页</div>
+  <div style="width:100%;height:140px;display:flex;align-items:center;justify-content:center;font-size:40px;background:linear-gradient(135deg,#004C91,#3a8fd4)"><i class="ph ph-newspaper" style="font-size:48px;color:white"></i></div>
+  <div style="padding:20px 16px">
+    <div style="font-size:18px;font-weight:700;line-height:1.4;margin-bottom:8px">2026年Q3平台政策更新解读</div>
+    <div style="display:flex;align-items:center;gap:12px;font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:16px">
+      <span>📅 2026-06-01</span><span>👤 沃尔玛官方</span><span>📂 沃享资讯</span><span>👁 3,456</span>
+    </div>
+    <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:16px"></div>
+    <div style="font-size:14px;color:rgba(255,255,255,0.8);line-height:1.9">
+      <p style="margin-bottom:12px">各位卖家朋友们，2026年Q3平台政策更新正式发布。以下是本次更新的核心内容：</p>
+      <div class="glass-card" style="padding:14px;margin-bottom:12px;border-left:3px solid #FFC220">
+        <div style="font-size:14px;font-weight:700;color:#FFC220;margin-bottom:6px">一、佣金费率调整</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.7);line-height:1.7">部分品类佣金费率有所下调，电子产品类从15%降至13%，家居用品类从12%降至10%。新费率自7月1日起生效。</div>
+      </div>
+      <div class="glass-card" style="padding:14px;margin-bottom:12px;border-left:3px solid #4a90d9">
+        <div style="font-size:14px;font-weight:700;color:#4a90d9;margin-bottom:6px">二、Listing新规范</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.7);line-height:1.7">标题长度限制从200字符调整为150字符，主图要求白底占比≥90%，新增视频展示功能。</div>
+      </div>
+      <div class="glass-card" style="padding:14px;margin-bottom:12px;border-left:3px solid #00cec9">
+        <div style="font-size:14px;font-weight:700;color:#00cec9;margin-bottom:6px">三、绩效指标更新</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.7);line-height:1.7">新增"订单缺陷率"指标，要求≤1%。违规率容忍度从5%降至3%，建议卖家重点关注。</div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:0 16px;display:flex;gap:10px;position:sticky;bottom:0;background:rgba(10,14,39,0.98);padding:12px 16px;border-top:1px solid rgba(255,255,255,0.06)">
+    <button style="flex:1;padding:10px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;background:none;color:#fff;font-size:13px;cursor:pointer">👍 收藏</button>
+    <button style="flex:1;padding:10px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;background:none;color:#fff;font-size:13px;cursor:pointer">🔄 分享</button>
+    <button style="flex:1;padding:10px;border:none;border-radius:8px;background:linear-gradient(135deg,#FFC220,#ff9500);color:#1a1145;font-size:13px;font-weight:700;cursor:pointer">联系经理</button>
+  </div>
+</div>
+
+<!-- ===== 19. Walmart Go站点页 ===== -->
+<div class="page" id="page-walmartgo" style="padding-bottom:90px">
+  <div class="back-btn" onclick="backTo('page-home')">‹ 返回首页</div>
+  <div style="padding:20px 16px;text-align:center">
+    <div style="font-size:48px;margin-bottom:8px">🌐</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:4px">Walmart Go</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.6)">沃尔玛全球电商站点一览</div>
+  </div>
+  <div style="padding:0 16px;display:flex;flex-direction:column;gap:14px">
+    <div class="glass-card" style="padding:20px;cursor:pointer" onclick="switchTab('page-sites')">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><span style="font-size:36px">🇺🇸</span><div><div style="font-size:15px;font-weight:700">Walmart.com 美国站</div><div style="font-size:12px;color:#FFC220">月活1.5亿+</div></div></div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6">全球访问量最大的电商平台，消费者购买力强，客单价高。</div>
+    </div>
+    <div class="glass-card" style="padding:20px;cursor:pointer" onclick="switchTab('page-sites')">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><span style="font-size:36px">🇨🇦</span><div><div style="font-size:15px;font-weight:700">Walmart.ca 加拿大站</div><div style="font-size:12px;color:#FFC220">增速最快</div></div></div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6">北美增长最快的电商市场，竞争相对较小。</div>
+    </div>
+    <div class="glass-card" style="padding:20px;cursor:pointer" onclick="switchTab('page-sites')">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><span style="font-size:36px">🇲🇽</span><div><div style="font-size:15px;font-weight:700">Walmart.mx 墨西哥站</div><div style="font-size:12px;color:#FFC220">拉美蓝海</div></div></div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6">拉美最大零售商，USMCA协定下关税优惠明显。</div>
+    </div>
+  </div>
+</div>
+</div><!-- /app -->
+
+<!-- TabBar -->
+<nav class="tabbar">
+  <div class="tab active" onclick="switchTab('p-home',this)"><div class="tab-icon"><i class="ph-bold ph-house"></i></div>首页</div>
+  <div class="tab" onclick="switchTab('page-join',this)"><div class="tab-icon"><i class="ph-bold ph-rocket-launch"></i></div>入驻</div>
+  <div class="tab" onclick="switchTab('page-community',this)"><div class="tab-icon"><i class="ph-bold ph-chats-circle"></i></div>社区</div>
+  <div class="tab" onclick="switchTab('page-mine',this)"><div class="tab-icon"><i class="ph-bold ph-user-circle"></i></div>我的</div>
+</nav>
+
+<!-- ===== 弹窗组件 ===== -->
+<div class="modal-overlay" id="notif-modal">
+  <div class="modal">
+    <div class="modal-icon"><i class="ph-bold ph-bell-ringing" style="font-size:48px;color:white"></i></div>
+    <div class="modal-title">消息通知</div>
+    <div class="modal-desc">您有3条未读消息<br>· 课程「Listing优化」已更新第5节<br>· 恭喜获得「三连胜」勋章！<br>· 2026全球峰会报名即将开启</div>
+    <button class="modal-btn primary" onclick="closeModal('notif-modal')">查看全部</button>
+    <button class="modal-btn secondary" onclick="closeModal('notif-modal')">稍后提醒</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="summit-modal">
+  <div class="modal">
+    <div class="modal-icon"><i class="ph-bold ph-globe-hemisphere-west" style="font-size:48px;color:white"></i></div>
+    <div class="modal-title">2026沃尔玛全球卖家峰会</div>
+    <div class="modal-desc">全球顶尖卖家齐聚一堂，分享最新运营策略与市场洞察<br>📍 深圳 · 📅 6月15日 · 🎫 Lv3+卖家专属报名</div>
+    <button class="modal-btn primary" onclick="closeModal('summit-modal');showModal('onboard-modal')">立即报名</button>
+    <button class="modal-btn secondary" onclick="closeModal('summit-modal')">稍后再说</button>
+    <div class="modal-close">请先关注服务号以接收活动通知</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="exam-start-modal">
+  <div class="modal">
+    <div class="modal-icon"><i class="ph-bold ph-graduation-cap" style="font-size:48px;color:white"></i></div>
+    <div class="modal-title">确认开始考核？</div>
+    <div class="modal-desc">考核共15题，限时15分钟<br>请确保网络稳定，一旦开始不可中断<br>考核通过后即可晋升为Lv3高手卖家</div>
+    <button class="modal-btn primary" onclick="closeModal('exam-start-modal');switchTab('page-exam-result')">🚀 确认开始</button>
+    <button class="modal-btn secondary" onclick="closeModal('exam-start-modal')">再想想</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="onboard-modal">
+  <div class="modal">
+    <div class="modal-icon"><i class="ph-bold ph-bell-ringing" style="font-size:48px;color:white"></i></div>
+    <div class="modal-title">关注服务号</div>
+    <div class="modal-desc">报名入驻需先关注「沃尔玛卖家服务」<br>获取课程通知、活动提醒和专属权益</div>
+    <button class="modal-btn primary" onclick="closeModal('onboard-modal')">✅ 已关注，继续</button>
+    <div class="modal-close">关注后请点击确认继续</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="developing-modal">
+  <div class="modal">
+    <div class="modal-icon"><i class="ph-bold ph-hammer" style="font-size:48px;color:white"></i></div>
+    <div class="modal-title">功能开发中</div>
+    <div class="modal-desc">该功能正在开发中，敬请期待！<br>如有需求请联系运营团队反馈。</div>
+    <button class="modal-btn primary" onclick="closeModal('developing-modal')">我知道了</button>
+  </div>
+</div>
+
+<script>
+function switchTab(pageId, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  if (el) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); }
+  window.scrollTo(0, 0);
+}
+function backTo(pageId) { switchTab(pageId); }
+function activateTab(el) { el.parentNode.querySelectorAll('.c-tab, .task-ct-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); }
+function toggleCommunity(el, tab) {
+  document.getElementById('comm-qa').style.display = tab === 'qa' ? 'block' : 'none';
+  document.getElementById('comm-forum').style.display = tab === 'forum' ? 'block' : 'none';
+  document.getElementById('comm-feedback').style.display = tab === 'feedback' ? 'block' : 'none';
+}
+function showModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); }); });
+</script>
+</body>
+</html>
