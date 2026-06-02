@@ -1374,6 +1374,7 @@ function canvasDragLeave(e) {
 function canvasDrop(e) {
   e.preventDefault();
   var modType = e.dataTransfer.getData('text/plain') || designerState.dragSource;
+  console.log('canvasDrop called, modType:', modType);
   if (!modType || !moduleTemplates[modType]) return;
   
   var template = moduleTemplates[modType];
@@ -1385,20 +1386,51 @@ function canvasDrop(e) {
     props: JSON.parse(JSON.stringify(template.props))
   };
   
-  // 插入到指定位置
   var container = document.getElementById('canvasModules');
-  var target = e.target.closest('.canvas-module');
-  var refNode = target ? target.nextSibling : null;
-  
   var el = createCanvasModuleEl(mod);
-  if (refNode) {
-    container.insertBefore(el, refNode);
-  } else {
-    container.appendChild(el);
+  
+  // 先移除空状态提示（而不是隐藏）
+  var empty = document.getElementById('canvasEmpty');
+  if (empty) {
+    empty.parentNode.removeChild(empty);
   }
   
-  designerState.modules.push(mod);
-  updateCanvasEmpty();
+  // 底部菜单栏(tabbar)和首页背景(homebg)默认添加到画布底部
+  if (modType === 'tabbar' || modType === 'homebg') {
+    // 直接追加到容器末尾
+    console.log('Adding ' + modType + ' to bottom of canvas');
+    container.appendChild(el);
+    // 将模块数据添加到数组末尾
+    designerState.modules.push(mod);
+  } else {
+    // 其他模块：插入到指定位置
+    var target = e.target.closest('.canvas-module');
+    
+    if (target) {
+      // 在目标模块之后插入
+      var refNode = target.nextSibling;
+      if (refNode) {
+        container.insertBefore(el, refNode);
+      } else {
+        container.appendChild(el);
+      }
+      // 找到插入位置的索引
+      var targetIndex = designerState.modules.findIndex(function(m) { return m.id === target.id; });
+      designerState.modules.splice(targetIndex + 1, 0, mod);
+    } else {
+      // 没有目标模块，添加到开头
+      var firstChild = container.firstChild;
+      if (firstChild && firstChild.id === 'canvasEmpty') {
+        container.appendChild(el);
+      } else if (firstChild) {
+        container.insertBefore(el, firstChild);
+      } else {
+        container.appendChild(el);
+      }
+      // 添加到数组开头
+      designerState.modules.unshift(mod);
+    }
+  }
   selectModule(id);
   designerState.dragSource = null;
 }
@@ -1415,8 +1447,20 @@ function createCanvasModuleEl(mod) {
 }
 
 function updateCanvasEmpty() {
+  var container = document.getElementById('canvasModules');
   var empty = document.getElementById('canvasEmpty');
-  if (empty) empty.style.display = designerState.modules.length === 0 ? 'flex' : 'none';
+  
+  if (designerState.modules.length === 0) {
+    // 如果没有模块，重新添加空状态提示
+    if (!empty) {
+      empty = document.createElement('div');
+      empty.className = 'canvas-empty';
+      empty.id = 'canvasEmpty';
+      empty.innerHTML = '<div class="ce-icon">📱</div><div class="ce-text">从左侧拖拽模块到此处<br>开始设计首页</div>';
+      container.appendChild(empty);
+    }
+    empty.style.display = 'flex';
+  }
 }
 
 function selectModule(id) {
