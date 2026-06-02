@@ -390,7 +390,7 @@ tbody tr:last-child td { border-bottom: none; }
 .canvas-header .ch-logo { width: 20px; height: 20px; margin-right: 6px; }
 .canvas-header .ch-title { font-size: 14px; font-weight: 700; color: #FFC220; }
 .canvas-status { font-size: 10px; color: rgba(255,255,255,0.4); text-align: center; padding: 0 16px 8px; }
-.canvas-modules { padding: 0 12px 80px; min-height: 500px; }
+.canvas-modules { padding: 0 12px 80px; min-height: 500px; flex: 1; display: flex; flex-direction: column; }
 .canvas-module {
   position: relative; border-radius: 12px; margin-bottom: 10px; cursor: pointer;
   transition: all 0.2s; border: 2px solid transparent;
@@ -453,8 +453,7 @@ tbody tr:last-child td { border-bottom: none; }
 /* 底部菜单栏 */
 .mod-tabbar { display: flex; justify-content: space-around; align-items: center; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.06); }
 /* 设计器中 tabbar 始终显示在底部 */
-.canvas-modules { display: flex; flex-direction: column; }
-.canvas-module[data-type="tabbar"] { order: 9999; margin-top: auto; }
+.canvas-module[data-type="tabbar"] { margin-top: auto; margin-bottom: 0; }
 .mod-tabbar-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 12px; }
 .mti-icon { font-size: 20px; }
 .mti-label { font-size: 10px; }
