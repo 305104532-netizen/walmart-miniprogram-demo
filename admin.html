@@ -455,7 +455,16 @@ tbody tr:last-child td { border-bottom: none; }
 /* 底部菜单栏 */
 .mod-tabbar { display: flex; justify-content: space-around; align-items: center; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.06); }
 /* 设计器中 tabbar 始终显示在底部 */
-.canvas-module[data-type="tabbar"] { margin-top: auto; margin-bottom: 0; }
+.canvas-module[data-type="tabbar"] { 
+  margin-top: auto; 
+  margin-bottom: 0; 
+  position: absolute;
+  bottom: 80px;
+  left: 12px;
+  right: 12px;
+  width: calc(100% - 24px);
+  z-index: 100;
+}
 .mod-tabbar-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 12px; }
 .mti-icon { font-size: 20px; }
 .mti-label { font-size: 10px; }
