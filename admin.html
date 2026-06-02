@@ -1401,6 +1401,11 @@ function canvasDrop(e) {
   // 所有模块都根据拖拽位置插入
   var target = e.target.closest('.canvas-module');
   
+  // 获取鼠标Y坐标，用于判断插入位置
+  var mouseY = e.clientY;
+  var containerRect = container.getBoundingClientRect();
+  var relativeY = mouseY - containerRect.top;
+  
   if (target) {
     // 在目标模块之后插入
     var refNode = target.nextSibling;
@@ -1412,10 +1417,20 @@ function canvasDrop(e) {
     // 找到插入位置的索引
     var targetIndex = designerState.modules.findIndex(function(m) { return m.id === target.id; });
     designerState.modules.splice(targetIndex + 1, 0, mod);
-  } else {
-    // 没有目标模块，添加到末尾
+  } else if (relativeY > containerRect.height / 2) {
+    // 鼠标在容器下半部分，添加到末尾
     container.appendChild(el);
     designerState.modules.push(mod);
+  } else {
+    // 鼠标在容器上半部分，添加到开头
+    var firstModule = container.querySelector('.canvas-module');
+    if (firstModule) {
+      container.insertBefore(el, firstModule);
+      designerState.modules.unshift(mod);
+    } else {
+      container.appendChild(el);
+      designerState.modules.push(mod);
+    }
   }
   selectModule(id);
   designerState.dragSource = null;
