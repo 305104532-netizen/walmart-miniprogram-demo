@@ -450,6 +450,26 @@ tbody tr:last-child td { border-bottom: none; }
 .mod-float { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; padding: 8px 0; }
 .mod-float-btn { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
 
+/* 底部菜单栏 */
+.mod-tabbar { display: flex; justify-content: space-around; align-items: center; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.06); }
+.mod-tabbar-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 12px; }
+.mti-icon { font-size: 20px; }
+.mti-label { font-size: 10px; }
+
+/* 首页背景配置 */
+.mod-homebg { border-radius: 12px; position: relative; }
+.mod-particles { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; overflow: hidden; }
+.mod-particle { position: absolute; border-radius: 50%; opacity: 0.12; animation: floatUp 20s infinite ease-in-out; }
+.mod-particle:nth-child(1) { top: 60%; animation-duration: 25s; }
+.mod-particle:nth-child(2) { top: 40%; animation-delay: 3s; animation-duration: 20s; }
+.mod-particle:nth-child(3) { top: 70%; animation-delay: 5s; animation-duration: 22s; }
+.mod-particle:nth-child(4) { top: 30%; animation-delay: 2s; animation-duration: 18s; }
+.mod-homebg-content { position: relative; z-index: 1; }
+
+/* TabBar 配置样式 */
+.tabbar-item-config { padding: 8px; background: rgba(0,76,145,0.05); border-radius: 8px; margin-bottom: 8px; }
+.tabbar-item-config .props-row { margin: 0; }
+
 .designer-props {
   background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-light); padding: 16px; overflow-y: auto;
@@ -731,6 +751,17 @@ td { font-size: 13px; color: #555; }
               <span class="pi-label">自定义区块</span>
             </div>
           </div>
+          <div class="palette-group">
+            <div class="palette-group-label">布局组件</div>
+            <div class="palette-item" draggable="true" data-module="tabbar" ondragstart="paletteDragStart(event,'tabbar')">
+              <div class="pi-icon blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="18" width="18" height="3" rx="1"/><path d="M7 18v-5a5 5 0 0 1 10 0v5"/></svg></div>
+              <span class="pi-label">底部菜单栏</span>
+            </div>
+            <div class="palette-item" draggable="true" data-module="homebg" ondragstart="paletteDragStart(event,'homebg')">
+              <div class="pi-icon green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="5"/><path d="M12 7V3"/></svg></div>
+              <span class="pi-label">首页背景配置</span>
+            </div>
+          </div>
         </div>
 
         <!-- 中间手机画布 -->
@@ -804,6 +835,33 @@ td { font-size: 13px; color: #555; }
             <div class="props-group">
               <div class="props-label">背景图片URL（选填）</div>
               <input class="props-input" id="propBgImg" onchange="updateModuleStyle('bgImg',this.value)" placeholder="https://...">
+            </div>
+            <!-- TabBar 特殊配置 -->
+            <div class="props-section" id="tabbarConfig" style="display:none">
+              <div class="props-label" style="margin-bottom:8px">菜单项配置</div>
+              <div id="tabbarItems">
+                <div class="tabbar-item-config" data-index="0">
+                  <div class="props-row" style="margin-bottom:8px">
+                    <input class="props-input" placeholder="图标" style="width:50px" onchange="updateTabbarItem(0,'icon',this.value)">
+                    <input class="props-input" placeholder="标签" onchange="updateTabbarItem(0,'label',this.value)">
+                  </div>
+                </div>
+              </div>
+              <button class="dt-btn ghost" style="width:100%;margin-top:8px" onclick="addTabbarItem()">+ 添加菜单项</button>
+            </div>
+            <!-- HomeBg 特殊配置 -->
+            <div class="props-section" id="homebgConfig" style="display:none">
+              <div class="props-group">
+                <div class="props-label">粒子颜色</div>
+                <div class="props-color">
+                  <input type="color" id="propParticleColor" value="#FFC220" onchange="updateModuleStyle('particleColor',this.value)">
+                  <input class="props-input" id="propParticleColorText" value="#FFC220" onchange="updateModuleStyle('particleColor',this.value)" style="flex:1">
+                </div>
+              </div>
+              <div class="props-group">
+                <div class="props-label">粒子数量</div>
+                <input class="props-input" type="number" id="propParticleCount" value="4" min="1" max="10" onchange="updateModuleStyle('particleCount',this.value)">
+              </div>
             </div>
             <div style="margin-top:16px">
               <button class="dt-btn" style="width:100%;background:#fef2f2;color:#ef4444" onclick="deleteSelectedModule()">🗑 删除模块</button>
@@ -1259,6 +1317,35 @@ var moduleTemplates = {
     render: function(p) {
       return '<div class="mod-card" style="background:'+p.bg+';border-radius:'+(p.rounded?'12px':'6px')+';padding:'+p.padV+'px '+p.padH+'px"><div class="mc-title" style="color:'+p.text+'">自定义区块标题</div><div class="mc-desc">在这里编辑自定义内容</div></div>';
     }
+  },
+  tabbar: {
+    name: '底部菜单栏',
+    icon: 'blue',
+    props: { visible: true, rounded: false, bg: 'rgba(0,30,96,0.95)', text: '#FFC220', link: '', padV: 8, padH: 0, bgImg: '', items: [{icon:'🏠',label:'首页',active:true},{icon:'📚',label:'课程',active:false},{icon:'🏅',label:'成长',active:false},{icon:'👤',label:'我的',active:false}] },
+    render: function(p) {
+      var itemsHtml = '';
+      var items = p.items || [{icon:'🏠',label:'首页',active:true},{icon:'📚',label:'课程',active:false},{icon:'🏅',label:'成长',active:false},{icon:'👤',label:'我的',active:false}];
+      for(var i=0;i<items.length;i++){
+        var color = items[i].active ? p.text : 'rgba(255,255,255,0.5)';
+        itemsHtml += '<div class="mod-tabbar-item" style="color:'+color+'"><span class="mti-icon">'+items[i].icon+'</span><span class="mti-label">'+items[i].label+'</span></div>';
+      }
+      return '<div class="mod-tabbar" style="background:'+p.bg+';padding:'+p.padV+'px '+p.padH+'px">'+itemsHtml+'</div>';
+    }
+  },
+  homebg: {
+    name: '首页背景配置',
+    icon: 'green',
+    props: { visible: true, rounded: false, bg: 'linear-gradient(170deg, #001E60 0%, #002D72 35%, #0071DC 80%, #3B8FE3 100%)', text: '#ffffff', link: '', padV: 0, padH: 0, bgImg: '', particleColor: '#FFC220', particleCount: 4 },
+    render: function(p) {
+      var bg = p.bgImg ? 'background:url('+p.bgImg+') center/cover' : 'background:'+p.bg;
+      var particles = '';
+      for(var i=0;i<(p.particleCount||4);i++){
+        var size = 60 + Math.random()*60;
+        var left = 5 + i*25;
+        particles += '<div class="mod-particle" style="width:'+size+'px;height:'+size+'px;left:'+left+'%;background:radial-gradient(circle, '+(p.particleColor||'#FFC220')+'80 0%, transparent 70%)"></div>';
+      }
+      return '<div class="mod-homebg" style="'+bg+';padding:'+p.padV+'px '+p.padH+'px;min-height:200px;position:relative;overflow:hidden"><div class="mod-particles">'+particles+'</div><div class="mod-homebg-content" style="color:'+p.text+';text-align:center;padding:40px 20px"><div style="font-size:18px;font-weight:700;margin-bottom:8px">首页背景预览</div><div style="font-size:12px;opacity:0.7">拖拽其他模块到背景上方</div></div></div>';
+    }
   }
 };
 
@@ -1354,6 +1441,15 @@ function selectModule(id) {
     document.getElementById('propPadH').value = mod.props.padH;
     document.getElementById('propBgImg').value = mod.props.bgImg || '';
     document.getElementById('propLinkGroup').style.display = mod.type === 'banner' || mod.type === 'activities' ? 'block' : 'none';
+    // 特殊模块配置显示控制
+    document.getElementById('tabbarConfig').style.display = mod.type === 'tabbar' ? 'block' : 'none';
+    document.getElementById('homebgConfig').style.display = mod.type === 'homebg' ? 'block' : 'none';
+    // HomeBg 特殊属性
+    if (mod.type === 'homebg') {
+      document.getElementById('propParticleColor').value = mod.props.particleColor || '#FFC220';
+      document.getElementById('propParticleColorText').value = mod.props.particleColor || '#FFC220';
+      document.getElementById('propParticleCount').value = mod.props.particleCount || 4;
+    }
   }
 }
 
@@ -1373,7 +1469,33 @@ function updateModuleStyle(key, val) {
   else if (key === 'padV') mod.props.padV = parseInt(val) || 0;
   else if (key === 'padH') mod.props.padH = parseInt(val) || 0;
   else if (key === 'bgImg') mod.props.bgImg = val;
+  else if (key === 'particleColor') { mod.props.particleColor = val; document.getElementById('propParticleColor').value = val; document.getElementById('propParticleColorText').value = val; }
+  else if (key === 'particleCount') { mod.props.particleCount = parseInt(val) || 4; document.getElementById('propParticleCount').value = mod.props.particleCount; }
   refreshModuleEl(mod);
+}
+
+// TabBar 配置函数
+function updateTabbarItem(index, key, val) {
+  var mod = designerState.modules.find(function(m) { return m.id === designerState.selectedId; });
+  if (!mod || mod.type !== 'tabbar') return;
+  if (!mod.props.items) mod.props.items = [];
+  if (!mod.props.items[index]) mod.props.items[index] = {icon:'',label:'',active:false};
+  mod.props.items[index][key] = val;
+  refreshModuleEl(mod);
+}
+function addTabbarItem() {
+  var mod = designerState.modules.find(function(m) { return m.id === designerState.selectedId; });
+  if (!mod || mod.type !== 'tabbar') return;
+  if (!mod.props.items) mod.props.items = [];
+  mod.props.items.push({icon:'📱',label:'新菜单',active:false});
+  refreshModuleEl(mod);
+  // 刷新配置面板
+  var container = document.getElementById('tabbarItems');
+  var html = '';
+  for(var i=0;i<mod.props.items.length;i++){
+    html += '<div class="tabbar-item-config" data-index="'+i+'"><div class="props-row" style="margin-bottom:8px"><input class="props-input" placeholder="图标" value="'+mod.props.items[i].icon+'" style="width:50px" onchange="updateTabbarItem('+i+',\'icon\',this.value)"><input class="props-input" placeholder="标签" value="'+mod.props.items[i].label+'" onchange="updateTabbarItem('+i+',\'label\',this.value)"></div></div>';
+  }
+  container.innerHTML = html;
 }
 
 function toggleModuleVisible(el) {
