@@ -869,6 +869,11 @@ input, textarea { -webkit-appearance: none; }
       <div class="stat"><div class="stat-num">8</div><div class="stat-label">已学课程</div></div>
     </div>
   </div>
+  <div class="section-title">常用功能</div>
+  <div class="menu-list">
+    <div class="menu-item glass-card" onclick="showModal('developing-modal')"><span class="menu-icon"><i class="ph ph-users-three"></i></span><span class="menu-text">邀约记录</span><span class="menu-arrow">›</span><span class="menu-badge">3</span></div>
+    <div class="menu-item glass-card" onclick="showModal('developing-modal')"><span class="menu-icon"><i class="ph ph-user-circle-plus"></i></span><span class="menu-text">完善信息</span><span class="menu-arrow">›</span><span class="menu-badge" style="background:rgba(255,68,68,0.15);color:#ff4444">待完善</span></div>
+  </div>
   <div class="section-title">学习管理</div>
   <div class="menu-list">
     <div class="menu-item glass-card" onclick="showModal('developing-modal')"><span class="menu-icon"><i class="ph ph-chart-bar"></i></span><span class="menu-text">我的学习记录</span><span class="menu-arrow">›</span></div>
@@ -1757,17 +1762,20 @@ input, textarea { -webkit-appearance: none; }
     </div>
 
     <!-- 直播/回放入口 -->
-    <div class="glass-card" style="padding:14px 16px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="showModal('live-modal2')">
+    <div class="glass-card" id="cd-live-entry" style="padding:14px 16px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="checkRegistrationForLive()">
       <div style="display:flex;align-items:center;gap:12px">
         <div style="width:40px;height:40px;border-radius:10px;background:rgba(255,0,0,0.15);display:flex;align-items:center;justify-content:center">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#ff4444"><polygon points="5,3 19,12 5,21"/></svg>
         </div>
         <div>
           <div style="font-size:14px;font-weight:600">观看直播 / 回放</div>
-          <div style="font-size:11px;color:rgba(255,255,255,0.5)">支持在线观看会议直播或回放录像</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.5)" id="cd-live-status">请先报名后观看</div>
         </div>
       </div>
-      <span style="color:rgba(255,255,255,0.3);font-size:18px">›</span>
+      <div id="cd-live-lock" style="display:flex;align-items:center;gap:4px">
+        <span style="font-size:14px">🔒</span>
+        <span style="color:rgba(255,255,255,0.3);font-size:18px">›</span>
+      </div>
     </div>
 
     <!-- 嘉宾阵容 -->
@@ -1791,8 +1799,63 @@ input, textarea { -webkit-appearance: none; }
     </div>
 
     <!-- 操作按钮 -->
-    <button class="onboard-btn" style="width:100%" onclick="showModal('developing-modal')">🎫 立即报名</button>
-    <button class="onboard-btn secondary" style="width:100%;margin-top:8px" onclick="showModal('developing-modal')">📤 分享会议</button>
+    <button class="onboard-btn" style="width:100%" onclick="showConfRegistration()">🎫 立即报名</button>
+    <button class="onboard-btn secondary" style="width:100%;margin-top:8px" onclick="generateConfPoster()">📤 分享会议</button>
+  </div>
+</div>
+
+<!-- 会议海报弹窗 -->
+<div class="modal-overlay" id="conf-poster-modal">
+  <div class="modal" style="text-align:center;padding:0;overflow:hidden;max-width:320px">
+    <!-- 海报内容 -->
+    <div id="conf-poster" style="background:linear-gradient(170deg, #001E60 0%, #002D72 35%, #0071DC 80%, #3B8FE3 100%);padding:28px 20px;text-align:center;position:relative;overflow:hidden">
+      <!-- 装饰粒子 -->
+      <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(255,194,32,0.15),transparent);"></div>
+      <div style="position:absolute;bottom:40px;left:-30px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(0,113,220,0.2),transparent);"></div>
+      <!-- Logo -->
+      <div style="margin-bottom:16px">
+        <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;background:rgba(255,194,32,0.15);border:1px solid rgba(255,194,32,0.3)">
+          <span style="font-size:14px">🌟</span>
+          <span style="font-size:12px;font-weight:700;color:#FFC220">沃尔玛卖家中心</span>
+        </div>
+      </div>
+      <!-- 会议标题 -->
+      <div style="font-size:20px;font-weight:800;color:#ffffff;margin-bottom:8px;text-shadow:0 2px 8px rgba(0,0,0,0.3)" id="poster-title">2026 全球卖家峰会</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:20px">诚邀您的参与</div>
+      <!-- 信息卡片 -->
+      <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;margin-bottom:16px;text-align:left">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span style="font-size:14px">📅</span>
+          <span style="font-size:13px;color:rgba(255,255,255,0.9)" id="poster-date">2026年6月15日</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span style="font-size:14px">⏰</span>
+          <span style="font-size:13px;color:rgba(255,255,255,0.9)" id="poster-time">09:00 - 17:00</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:14px">📍</span>
+          <span style="font-size:13px;color:rgba(255,255,255,0.9)" id="poster-location">深圳国际会展中心</span>
+        </div>
+      </div>
+      <!-- 邀请人信息 -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px">
+        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#FFC220,#ff9500);display:flex;align-items:center;justify-content:center;font-size:14px">👤</div>
+        <div style="text-align:left">
+          <div style="font-size:12px;color:rgba(255,255,255,0.9);font-weight:600">我的专属邀请</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.5)">邀请码: WM2026SELLER</div>
+        </div>
+      </div>
+      <!-- 二维码区域 -->
+      <div style="background:white;border-radius:10px;padding:12px;display:inline-block;margin-bottom:12px">
+        <div style="width:80px;height:80px;background:repeating-conic-gradient(#333 0% 25%, #fff 0% 50%) 50%/8px 8px;border-radius:4px"></div>
+      </div>
+      <div style="font-size:10px;color:rgba(255,255,255,0.5)">扫码报名 · 席位有限</div>
+    </div>
+    <!-- 按钮区域 -->
+    <div style="padding:16px;background:rgba(0,20,60,0.95)">
+      <button class="onboard-btn" style="width:100%;margin-bottom:8px" onclick="showModal('developing-modal');closeModal('conf-poster-modal')">💾 保存海报</button>
+      <button class="onboard-btn secondary" style="width:100%" onclick="closeModal('conf-poster-modal')">关闭</button>
+    </div>
   </div>
 </div>
 
@@ -1805,6 +1868,55 @@ input, textarea { -webkit-appearance: none; }
     </div>
     <div class="modal-desc">直播将在此处播放<br>请先关注公众号获取直播链接</div>
     <button class="modal-btn primary" onclick="closeModal('live-modal2')">关闭</button>
+  </div>
+</div>
+
+<!-- 会议报名表单弹窗 -->
+<div class="modal-overlay" id="conf-register-modal">
+  <div class="modal" style="text-align:left;padding:24px;max-width:340px">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:32px;margin-bottom:8px">📋</div>
+      <div style="font-size:16px;font-weight:700;color:#ffffff">会议报名</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px">填写信息完成报名，即可观看直播</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div>
+        <label style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:4px;display:block">姓名 <span style="color:#ff4444">*</span></label>
+        <input type="text" id="reg-name" placeholder="请输入您的姓名" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box">
+      </div>
+      <div>
+        <label style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:4px;display:block">手机号 <span style="color:#ff4444">*</span></label>
+        <input type="tel" id="reg-phone" placeholder="请输入手机号" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box">
+      </div>
+      <div>
+        <label style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:4px;display:block">公司名称 <span style="color:#ff4444">*</span></label>
+        <input type="text" id="reg-company" placeholder="请输入公司名称" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box">
+      </div>
+      <div>
+        <label style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:4px;display:block">职位</label>
+        <input type="text" id="reg-position" placeholder="请输入您的职位（选填）" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box">
+      </div>
+      <div>
+        <label style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:4px;display:block">邮箱</label>
+        <input type="email" id="reg-email" placeholder="请输入邮箱（选填）" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-size:14px;outline:none;box-sizing:border-box">
+      </div>
+    </div>
+    <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
+      <button class="onboard-btn" style="width:100%" onclick="submitConfRegistration()">✅ 提交报名</button>
+      <button class="onboard-btn secondary" style="width:100%" onclick="closeModal('conf-register-modal')">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 报名成功弹窗 -->
+<div class="modal-overlay" id="conf-register-success-modal">
+  <div class="modal" style="text-align:center;padding:28px">
+    <div style="width:64px;height:64px;border-radius:50%;background:rgba(34,197,94,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+      <span style="font-size:32px">🎉</span>
+    </div>
+    <div style="font-size:18px;font-weight:700;color:#ffffff;margin-bottom:8px">报名成功！</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:20px;line-height:1.6">您已成功报名，现在可以观看直播/回放了<br>会议开始前我们会通过短信提醒您</div>
+    <button class="onboard-btn" style="width:100%" onclick="closeModal('conf-register-success-modal')">🎬 去观看直播</button>
   </div>
 </div>
 
@@ -2172,6 +2284,90 @@ function showLevelDetail(level) {
   var benefitsHtml = '<div style="text-align:left;margin:16px 0"><div style="font-size:12px;font-weight:600;color:#22c55e;margin-bottom:8px">🎁 等级权益</div><div style="display:flex;flex-direction:column;gap:6px">' + info.benefits.map(function(b) { return '<div style="display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,0.8)"><span style="color:#22c55e">✓</span>' + b + '</div>'; }).join('') + '</div></div>';
   document.getElementById('ld-content').innerHTML = coursesHtml + benefitsHtml;
   showModal('level-detail-modal');
+}
+
+// 生成会议海报
+function generateConfPoster() {
+  // 从会议详情页获取当前信息
+  var title = document.getElementById('cd-title').textContent || '2026 全球卖家峰会';
+  var date = document.getElementById('cd-date').textContent || '2026年6月15日';
+  var time = document.getElementById('cd-time').textContent || '09:00 - 17:00';
+  var location = document.getElementById('cd-location').textContent || '深圳国际会展中心';
+  
+  // 更新海报内容
+  document.getElementById('poster-title').textContent = title;
+  document.getElementById('poster-date').textContent = date;
+  document.getElementById('poster-time').textContent = time;
+  document.getElementById('poster-location').textContent = location;
+  
+  // 显示海报弹窗
+  showModal('conf-poster-modal');
+}
+
+// 会议报名状态
+var confRegistered = false;
+
+// 显示报名表单
+function showConfRegistration() {
+  if (confRegistered) {
+    showModal('conf-register-success-modal');
+    return;
+  }
+  // 清空表单
+  document.getElementById('reg-name').value = '';
+  document.getElementById('reg-phone').value = '';
+  document.getElementById('reg-company').value = '';
+  document.getElementById('reg-position').value = '';
+  document.getElementById('reg-email').value = '';
+  showModal('conf-register-modal');
+}
+
+// 提交报名
+function submitConfRegistration() {
+  var name = document.getElementById('reg-name').value.trim();
+  var phone = document.getElementById('reg-phone').value.trim();
+  var company = document.getElementById('reg-company').value.trim();
+  
+  // 验证必填项
+  if (!name) { alert('请输入姓名'); return; }
+  if (!phone) { alert('请输入手机号'); return; }
+  if (!/^1\d{10}$/.test(phone)) { alert('请输入正确的手机号'); return; }
+  if (!company) { alert('请输入公司名称'); return; }
+  
+  // 标记已报名
+  confRegistered = true;
+  
+  // 关闭报名表单
+  closeModal('conf-register-modal');
+  
+  // 更新直播入口状态
+  updateLiveEntryStatus();
+  
+  // 显示报名成功弹窗
+  setTimeout(function() {
+    showModal('conf-register-success-modal');
+  }, 300);
+}
+
+// 更新直播入口状态
+function updateLiveEntryStatus() {
+  var statusEl = document.getElementById('cd-live-status');
+  var lockEl = document.getElementById('cd-live-lock');
+  if (confRegistered) {
+    statusEl.textContent = '已报名，点击观看直播';
+    statusEl.style.color = '#22c55e';
+    lockEl.innerHTML = '<span style="font-size:14px">🔓</span><span style="color:rgba(255,255,255,0.3);font-size:18px">›</span>';
+  }
+}
+
+// 检查报名状态后观看直播
+function checkRegistrationForLive() {
+  if (confRegistered) {
+    showModal('live-modal2');
+  } else {
+    // 未报名，提示先报名
+    showConfRegistration();
+  }
 }
 </script>
 
